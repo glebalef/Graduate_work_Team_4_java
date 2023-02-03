@@ -442,6 +442,7 @@ paths:
     get:
       operationId: getAdsMeUsingGET
       parameters:
+        -
         - in: query
           name: authenticated
           schema:
