@@ -13,7 +13,6 @@ public class UserController {
     public ResponseEntity<UserDto> setPassword(@RequestBody UserDto user) {
         return ResponseEntity.ok().build();
     }
-
     @PatchMapping("/me")
     public UserDto updateUser(@RequestBody UserDto user) {
         return user;
