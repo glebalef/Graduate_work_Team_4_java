@@ -12,7 +12,6 @@ public class UserController {
     public ResponseEntity<UserDto> setPassword(@RequestParam String currentPassword, String newPassword) {
         return ResponseEntity.ok().build();
     }
-
     @PatchMapping("/me")
     public UserDto updateUser(@RequestBody UserDto user) {
         return user;
