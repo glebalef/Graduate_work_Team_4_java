@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.UserDto;
@@ -9,10 +10,9 @@ import ru.skypro.homework.dto.UserDto;
 @CrossOrigin(value = "http://localhost:3000")
 public class UserController {
     @PostMapping("/set_password")
-    public ResponseEntity<UserDto> setPassword(@RequestParam String currentPassword, String newPassword) {
+    public ResponseEntity<UserDto> setPassword(@RequestBody UserDto user) {
         return ResponseEntity.ok().build();
     }
-
     @PatchMapping("/me")
     public UserDto updateUser(@RequestBody UserDto user) {
         return user;
