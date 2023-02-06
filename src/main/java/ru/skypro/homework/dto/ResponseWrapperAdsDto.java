@@ -4,7 +4,7 @@ import lombok.Data;
 import ru.skypro.homework.model.Ads;
 
 @Data
-public class ResponseWrapperAds {
+public class ResponseWrapperAdsDto {
     private int count;
     private Ads[] results;
 

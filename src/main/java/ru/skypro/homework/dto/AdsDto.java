@@ -3,9 +3,10 @@ package ru.skypro.homework.dto;
 import lombok.Data;
 
 @Data
-public class Comment {
+public class AdsDto {
     private int author;
-    private String createdAt;
+    private String[] image;
     private int pk;
-    private String text;
+    private int price;
+    private String title;
 }
