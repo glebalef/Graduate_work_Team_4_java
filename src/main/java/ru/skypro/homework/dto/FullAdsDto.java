@@ -2,6 +2,8 @@ package ru.skypro.homework.dto;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+
 @Data
 public class FullAdsDto {
 
@@ -9,7 +11,7 @@ public class FullAdsDto {
     private String authorLastName;
     private String description;
     private String email;
-    private String[] image;
+    private ArrayList<String> image;
     private String phone;
     private int pk;
     private int price;
