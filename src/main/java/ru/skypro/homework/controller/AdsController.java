@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
 @RequestMapping("/ads")
@@ -8,39 +9,53 @@ import ru.skypro.homework.dto.*;
 @RestController
 public class AdsController {
 
+// /ads
+    @GetMapping("")
+    public AdsDto getAds() {
+        return new AdsDto();
+    }
+    @PostMapping("")
+    public AdsDto addAds(@RequestBody CreateAdsDto createAds,
+                         @RequestBody MultipartFile image) {
+        return new AdsDto();
+    }
+
+    // /ads/{id}
     @GetMapping("{id}")
     public FullAdsDto getFullAd(@PathVariable int id) {
         return new FullAdsDto();
     }
 
-    @DeleteMapping("{id}/delete")
-    public FullAdsDto removeAds(@PathVariable int id) {
-        return new FullAdsDto();
+    @DeleteMapping("{id}")
+    public FullAdsDto removeAds(@PathVariable int id) { return new FullAdsDto();
     }
 
-    @PostMapping("")
-    public AdsDto updateAds(@RequestBody CreateAdsDto createAds) {
-        return new AdsDto();
+    @PatchMapping("{id}")
+    public FullAdsDto updateAds(@PathVariable int id, @RequestBody CreateAdsDto ads) { return new FullAdsDto();
     }
 
+
+    // {ad_pk}/comments/{id}
     @GetMapping("{ad_pk}/comments/{id}")
     public CommentDto getComments(@PathVariable String ad_pk,
                                   @PathVariable String id) {
         return new CommentDto();
     }
 
-    @DeleteMapping("{ad_pk}/comments/{id}/delete")
+    @DeleteMapping("{ad_pk}/comments/{id}")
     public CommentDto deleteComments(@PathVariable String ad_pk,
                                      @PathVariable String id) {
         return new CommentDto();
     }
 
-    @PostMapping("comments")
-    public CommentDto deleteComments(@RequestBody CommentDto commentDto) {
+    @PatchMapping ("{ad_pk}/comments/{id}")
+    public CommentDto updateComments(@PathVariable String ad_pk,
+                                    @PathVariable String id,
+                                     @RequestBody CommentDto comment) {
         return new CommentDto();
     }
 
-    @PostMapping("me")
+    @GetMapping("me")
     public ResponseWrapperAdsDto getAdsMe() {
         return new ResponseWrapperAdsDto();
     }
