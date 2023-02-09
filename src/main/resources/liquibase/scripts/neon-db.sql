@@ -26,3 +26,6 @@ CREATE TABLE ads
     price BIGINT,
     type VARCHAR
 );
+
+-- changeset EvgenyF:3
+ALTER TABLE ads add column title varchar;
