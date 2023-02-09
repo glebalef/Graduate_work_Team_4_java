@@ -1,30 +1,39 @@
 package ru.skypro.homework.controller;
 
-import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.service.UserService;
 
 @RestController
 @RequestMapping("/users")
 @CrossOrigin(value = "http://localhost:3000")
 public class UserController {
-    @PostMapping("/set_password")
-    public ResponseEntity<UserDto> setPassword(@RequestBody UserDto user) {
-        return ResponseEntity.ok().build();
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
+
+    @PostMapping("/set_password")
+    public ResponseEntity<NewPasswordDto> setPassword(@RequestBody NewPasswordDto newPasswordDto) {
+        userService.setPassword(newPasswordDto);
+        return ResponseEntity.ok(userService.setPassword(newPasswordDto));
+    }
+
     @PatchMapping("/me")
-    public UserDto updateUser(@RequestBody UserDto user) {
-        return user;
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.updateUser(userDto));
     }
 
     @GetMapping("/me")
-    public UserDto getUser(@RequestBody UserDto user) {
-        return user;
+    public ResponseEntity<UserDto> getUser() {
+        return ResponseEntity.ok(userService.getUser());
     }
 
     @PatchMapping("/me/image")
-    public String updateUserImage(@RequestBody String image) {
-        return image;
+    public ResponseEntity<?> updateUserImage(@RequestBody String image) {
+        return ResponseEntity.ok().build();
     }
 }
