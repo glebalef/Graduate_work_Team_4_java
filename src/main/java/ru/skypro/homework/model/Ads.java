@@ -1,6 +1,7 @@
 package ru.skypro.homework.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +10,12 @@ public class Ads {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pk;
-    private String authorFirstName;
-    private String authorLastName;
+    private Long pk;
     private String description;
-    private String email;
-    @ElementCollection
-    private ArrayList<String> image;
-    private String phone;
-    private int price;
+    @ManyToOne
+    private User user;
+    @Transient
+    private List <String> image;
+    private Long price;
     private String type;
 }

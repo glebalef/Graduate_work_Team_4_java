@@ -1,6 +1,6 @@
 package ru.skypro.homework.dto;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
 public class LoginReq {
