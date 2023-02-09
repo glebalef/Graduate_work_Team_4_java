@@ -4,10 +4,11 @@ import lombok.Data;
 import ru.skypro.homework.model.Comment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class ResponseWrapperComment {
     private int count;
-    private ArrayList <Comment> results;
+    private List<Comment> results;
 
 }

@@ -15,8 +15,8 @@ public class AdsController {
         return new AdsDto();
     }
     @PostMapping("")
-    public AdsDto addAds(@RequestBody CreateAdsDto createAds,
-                         @RequestBody MultipartFile image) {
+    public AdsDto addAds(@RequestPart CreateAdsDto properties,
+                         @RequestPart MultipartFile image) {
         return new AdsDto();
     }
 
@@ -36,20 +36,20 @@ public class AdsController {
 
 
     // {ad_pk}/comments/{id}
-    @GetMapping("{ad_pk}/comments/{id}")
-    public CommentDto getComments(@PathVariable String ad_pk,
+    @GetMapping("{adPk}/comments/{id}")
+    public CommentDto getComments(@PathVariable String adPk,
                                   @PathVariable String id) {
         return new CommentDto();
     }
 
-    @DeleteMapping("{ad_pk}/comments/{id}")
-    public CommentDto deleteComments(@PathVariable String ad_pk,
+    @DeleteMapping("{adPk}/comments/{id}")
+    public CommentDto deleteComments(@PathVariable String adPk,
                                      @PathVariable String id) {
         return new CommentDto();
     }
 
-    @PatchMapping ("{ad_pk}/comments/{id}")
-    public CommentDto updateComments(@PathVariable String ad_pk,
+    @PatchMapping ("{adPk}/comments/{id}")
+    public CommentDto updateComments(@PathVariable String adPk,
                                     @PathVariable String id,
                                      @RequestBody CommentDto comment) {
         return new CommentDto();
