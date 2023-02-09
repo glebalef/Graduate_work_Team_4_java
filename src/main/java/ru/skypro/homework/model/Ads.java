@@ -1,8 +1,6 @@
 package ru.skypro.homework.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,5 +15,5 @@ public class Ads {
     @Transient
     private List <String> image;
     private Long price;
-    private String type;
+    private String title;
 }
