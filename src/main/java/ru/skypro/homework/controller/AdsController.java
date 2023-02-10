@@ -1,13 +1,21 @@
 package ru.skypro.homework.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.impl.CommentServiceImpl;
 
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 public class AdsController {
+
+    private final CommentServiceImpl commentService;
+
+    AdsController(CommentServiceImpl commentService) {
+        this.commentService = commentService;
+    }
 
 // /ads
     @GetMapping("")
@@ -37,22 +45,30 @@ public class AdsController {
 
     // {ad_pk}/comments/{id}
     @GetMapping("{adPk}/comments/{id}")
-    public CommentDto getComments(@PathVariable String adPk,
-                                  @PathVariable String id) {
-        return new CommentDto();
+    public ResponseEntity <CommentDto> getComments(@PathVariable Long adPk, @PathVariable Long id) {
+        CommentDto commentDto = commentService.getComments(id);
+        if (commentDto == null) {
+            ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(commentDto);
     }
 
     @DeleteMapping("{adPk}/comments/{id}")
-    public CommentDto deleteComments(@PathVariable String adPk,
-                                     @PathVariable String id) {
-        return new CommentDto();
+    public ResponseEntity<Void> deleteComments(@PathVariable Long adPk,
+                                         @PathVariable Long id) {
+        commentService.deleteComments(id);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping ("{adPk}/comments/{id}")
-    public CommentDto updateComments(@PathVariable String adPk,
-                                    @PathVariable String id,
+    public ResponseEntity <CommentDto> updateComments(@PathVariable Long adPk,
+                                    @PathVariable Long id,
                                      @RequestBody CommentDto comment) {
-        return new CommentDto();
+        CommentDto commentDto = commentService.updateComments(adPk, id, comment);
+        if (commentDto == null) {
+            ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(commentDto);
     }
 
     @GetMapping("me")

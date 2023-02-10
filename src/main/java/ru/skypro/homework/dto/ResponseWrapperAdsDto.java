@@ -1,9 +1,8 @@
 package ru.skypro.homework.dto;
 
 import lombok.Data;
-import ru.skypro.homework.model.Ads;
+import ru.skypro.homework.entity.Ads;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

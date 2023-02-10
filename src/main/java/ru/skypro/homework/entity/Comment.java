@@ -1,27 +1,22 @@
-package ru.skypro.homework.model;
+package ru.skypro.homework.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
+@Table (name = "comments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Ads {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long pk;
-    private String description;
-    private String title;
+public class Comment {
     @ManyToOne
     private User user;
-    @Transient
-    private List <String> image;
-    private Long price;
+    private String createdAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pk;
+    private String text;
 }
