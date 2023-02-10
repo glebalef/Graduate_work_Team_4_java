@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.mapper.UserMapper;
-import ru.skypro.homework.model.User;
+import ru.skypro.homework.entity.User;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
             userFound.setCity(userDto.getCity());
             userFound.setImage(userDto.getImage());
             userRepository.save(userFound);
-            return UserMapper.INSTANCE.usertoUserDto(userFound);
+            return UserMapper.INSTANCE.userToUserDto(userFound);
         }
         return null;
     }

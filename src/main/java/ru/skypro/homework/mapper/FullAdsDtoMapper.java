@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import ru.skypro.homework.dto.FullAdsDto;
-import ru.skypro.homework.model.Ads;
+import ru.skypro.homework.entity.Ads;
 
 @Mapper(componentModel = "spring")
 public interface FullAdsDtoMapper {

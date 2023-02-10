@@ -5,17 +5,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
-import ru.skypro.homework.model.User;
+import ru.skypro.homework.entity.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserDto usertoUserDto(User user);
-    User userDtotoUser(UserDto userDto);
-    @Mapping(target = "newPasswordDto.password", source = "password")
-    NewPasswordDto usertoNewPasswordDto(User user);
-    @Mapping(target = "password", source = "newPasswordDto.password")
-    User newPasswordDtotoUser(NewPasswordDto newPasswordDto);
-
+    UserDto userToUserDto(User user);
+    User userDtoToUser(UserDto userDto);
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
 }

@@ -1,9 +1,8 @@
 package ru.skypro.homework.dto;
 
 import lombok.Data;
-import ru.skypro.homework.model.Comment;
+import ru.skypro.homework.entity.Comment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

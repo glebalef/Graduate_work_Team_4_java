@@ -6,7 +6,7 @@ import ru.skypro.homework.dto.FullAdsDto;
 import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.mapper.CreateAdsDtoMapper;
 import ru.skypro.homework.mapper.FullAdsDtoMapper;
-import ru.skypro.homework.model.Ads;
+import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.service.AdsService;
 
