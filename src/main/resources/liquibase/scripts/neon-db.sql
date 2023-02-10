@@ -24,5 +24,6 @@ CREATE TABLE ads
     title VARCHAR,
     user_id BIGINT REFERENCES users (id),
     image VARCHAR[],
-    price BIGINT
+    price BIGINT,  
 );
+
