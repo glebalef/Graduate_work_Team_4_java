@@ -42,9 +42,8 @@ public class UserServiceImpl implements UserService {
             userFound.setLastName(userDto.getLastName());
             userFound.setPhone(userDto.getPhone());
             userFound.setCity(userDto.getCity());
-            userFound.setImage(userDto.getImage());
             userRepository.save(userFound);
-            return UserMapper.INSTANCE.userToUserDto(userFound);
+            return UserMapper.INSTANCE.usertoUserDto(userFound);
         }
         return null;
     }
@@ -58,5 +57,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserImage(String image) {
         logger.debug("Was invoked method for editing user's image");
+
     }
 }
