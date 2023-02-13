@@ -22,7 +22,7 @@ public class AdsController {
     public AdsDto getAds() {
         return new AdsDto();
     }
-    @PostMapping("")
+    @PostMapping(consumes = {"multipart/form-data"})
     public AdsDto addAds(@RequestPart CreateAdsDto properties,
                          @RequestPart MultipartFile image) {
         return new AdsDto();
