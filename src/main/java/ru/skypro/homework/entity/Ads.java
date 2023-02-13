@@ -22,6 +22,6 @@ public class Ads {
     @ManyToOne
     private User user;
     @Transient
-    private List <String> image;
+    private List <Image> image;
     private Long price;
 }
