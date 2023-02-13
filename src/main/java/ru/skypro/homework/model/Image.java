@@ -1,29 +1,25 @@
 package ru.skypro.homework.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Ads {
-
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long pk;
-    private String description;
-    private String title;
+    private Long id;
+    private String filePath;
+    private Long fileSize;
+    private String mediaType;
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] data;
     @ManyToOne
-    private User user;
-    @Transient
-    private List<Image> image;
-    private Long price;
+    private Ads ads;
 }

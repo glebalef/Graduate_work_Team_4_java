@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -14,7 +15,7 @@ public class AdsController {
     public AdsDto getAds() {
         return new AdsDto();
     }
-    @PostMapping("")
+    @PostMapping(consumes = {"multipart/form-data"})
     public AdsDto addAds(@RequestPart CreateAdsDto properties,
                          @RequestPart MultipartFile image) {
         return new AdsDto();
