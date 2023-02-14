@@ -1,10 +1,24 @@
 package ru.skypro.homework.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.entity.Ads;
+import ru.skypro.homework.entity.Image;
+import ru.skypro.homework.impl.AdsServiceImpl;
 import ru.skypro.homework.impl.CommentServiceImpl;
+import ru.skypro.homework.impl.ImageServiceImpl;
+import ru.skypro.homework.mapper.AdsMapper;
+import ru.skypro.homework.mapper.CreateAdsDtoMapper;
+import ru.skypro.homework.repository.AdsRepository;
+import ru.skypro.homework.repository.AvatarRepository;
+import ru.skypro.homework.repository.ImageRepository;
+
+import java.io.IOException;
+
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
@@ -12,34 +26,57 @@ import ru.skypro.homework.impl.CommentServiceImpl;
 public class AdsController {
 
     private final CommentServiceImpl commentService;
+    private final AdsServiceImpl adsService;
+    private final ImageServiceImpl imageService;
+    private final CreateAdsDtoMapper createAdsDtoMapper;
+    private final AdsMapper adsMapper;
+    private final AdsRepository adsRepository;
+    private final AvatarRepository avatarRepository;
+    private final ImageRepository imageRepository;
 
-    AdsController(CommentServiceImpl commentService) {
+    AdsController(CommentServiceImpl commentService, AdsServiceImpl adsService, ImageServiceImpl imageService, CreateAdsDtoMapper createAdsDtoMapper, AdsMapper adsMapper,
+                  AdsRepository adsRepository,
+                  AvatarRepository avatarRepository,
+                  ImageRepository imageRepository) {
         this.commentService = commentService;
+        this.adsService = adsService;
+        this.imageService = imageService;
+        this.createAdsDtoMapper = createAdsDtoMapper;
+        this.adsMapper = adsMapper;
+        this.adsRepository = adsRepository;
+        this.avatarRepository = avatarRepository;
+        this.imageRepository = imageRepository;
     }
 
-// /ads
+    // /ads
     @GetMapping("")
     public AdsDto getAds() {
         return new AdsDto();
     }
-    @PostMapping(consumes = {"multipart/form-data"})
-    public AdsDto addAds(@RequestPart CreateAdsDto properties,
-                         @RequestPart MultipartFile image) {
-        return new AdsDto();
+
+    @PostMapping( value = "", consumes = {"application/json", MediaType.MULTIPART_FORM_DATA_VALUE})
+    public AdsDto addAds(@RequestPart(required = false) CreateAdsDto properties,
+                         @RequestPart(required = false) MultipartFile image)
+            throws IOException {
+        adsService.addAds(properties);
+        imageService.uploadImage(1L, image);
+        return adsMapper.adsToAdsDto(createAdsDtoMapper.createAdsDtoToAds(properties));
     }
 
     // /ads/{id}
     @GetMapping("{id}")
-    public FullAdsDto getFullAd(@PathVariable int id) {
-        return new FullAdsDto();
+    public FullAdsDto getFullAd(@PathVariable Long id) {
+        return adsService.getFullAds(id);
     }
 
     @DeleteMapping("{id}")
-    public FullAdsDto removeAds(@PathVariable int id) { return new FullAdsDto();
+    public FullAdsDto removeAds(@PathVariable Long id) {
+        return adsService.removeFullAds(id);
     }
 
     @PatchMapping("{id}")
-    public FullAdsDto updateAds(@PathVariable int id, @RequestBody CreateAdsDto ads) { return new FullAdsDto();
+    public FullAdsDto updateAds(@PathVariable Long id, @RequestBody CreateAdsDto ads) {
+        return adsService.updateAds(id, ads);
     }
 
 
