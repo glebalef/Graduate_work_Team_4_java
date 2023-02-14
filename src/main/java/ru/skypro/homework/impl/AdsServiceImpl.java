@@ -1,5 +1,7 @@
 package ru.skypro.homework.impl;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateAdsDto;
 import ru.skypro.homework.dto.FullAdsDto;
@@ -10,6 +12,7 @@ import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.service.AdsService;
 
+@Service
 public class AdsServiceImpl implements AdsService {
 
 private final AdsRepository adsRepository;
@@ -26,33 +29,38 @@ private final FullAdsDtoMapper fullAdsDtoMapper;
     }
 
     @Override
-    public AdsDto getAds(AdsDto adsDto) {
-        return adsMapper.adsToAdsDto(adsRepository.findById(adsDto.getPk()).get());
+    public AdsDto getAds(Long pk) {
+
+        return adsMapper.adsToAdsDto(adsRepository.findById(pk).get());
     }
 
     @Override
-    public AdsDto addAds(CreateAdsDto createAdsDto) {
+    public CreateAdsDto addAds(CreateAdsDto createAdsDto) {
+        adsRepository.save(createAdsDtoMapper.createAdsDtoToAds(createAdsDto));
+        return createAdsDto;
+    }
+
+    @Override
+    public FullAdsDto getFullAds(Long pk) {
+        adsRepository.findById(pk).get();
+        return fullAdsDtoMapper.adsToFullAdsDto( adsRepository.findById(pk).get());
+    }
+
+    @Override
+    public FullAdsDto removeFullAds(Long pk) {
+        FullAdsDto result = fullAdsDtoMapper.adsToFullAdsDto(adsRepository.findById(pk).get());
+        adsRepository.delete(adsRepository.findById(pk).get());
+        return result;
+    }
+
+    @Override
+    public FullAdsDto updateAds(Long pk, CreateAdsDto createAdsDto) {
+        Ads oldAds = adsRepository.findById(pk).get();
         Ads newAds = createAdsDtoMapper.createAdsDtoToAds(createAdsDto);
-        newAds.setDescription(createAdsDto.getDescription());
-        newAds.setTitle(createAdsDto.getTitle());
-        newAds.setPrice(createAdsDto.getPrice());
-        adsRepository.save(newAds);
-        return adsMapper.adsToAdsDto(newAds);
-    }
-
-    @Override
-    public FullAdsDto getFullAds(FullAdsDto fullAdsDto) {
-        return fullAdsDto;
-    }
-
-    @Override
-    public FullAdsDto removeFullAds(FullAdsDto fullAdsDto) {
-        adsRepository.delete(fullAdsDtoMapper.fullAdsDtoToads(fullAdsDto));
-        return fullAdsDto;
-    }
-
-    @Override
-    public FullAdsDto updateAds(CreateAdsDto createAdsDto) {
-        return null;
+        oldAds.setPrice(newAds.getPrice());
+        oldAds.setTitle(newAds.getTitle());
+        oldAds.setDescription(newAds.getDescription());
+        adsRepository.save(oldAds);
+        return fullAdsDtoMapper.adsToFullAdsDto(oldAds);
     }
 }

@@ -18,6 +18,7 @@ import javax.persistence.*;
         private Long fileSize;
         private String mediaType;
         @Type(type = "org.hibernate.type.BinaryType")
+        @Lob
         private byte[] data;
         @ManyToOne
         private Ads ads;

@@ -15,7 +15,6 @@ public class Ads {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long pk;
     private String description;
     private String title;
