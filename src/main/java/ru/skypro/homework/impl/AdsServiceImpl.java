@@ -6,10 +6,12 @@
         import ru.skypro.homework.dto.CreateAdsDto;
         import ru.skypro.homework.dto.FullAdsDto;
         import ru.skypro.homework.entity.Ads;
+        import ru.skypro.homework.entity.Image;
         import ru.skypro.homework.mapper.AdsMapperSamopiska;
         import ru.skypro.homework.mapper.CreateAdsDtoMapper;
         import ru.skypro.homework.mapper.FullAdsMapperSamopiska;
         import ru.skypro.homework.repository.AdsRepository;
+        import ru.skypro.homework.repository.ImageRepository;
         import ru.skypro.homework.service.AdsService;
 
         import java.util.Objects;
@@ -23,8 +25,8 @@ public class AdsServiceImpl implements AdsService {
     private final CreateAdsDtoMapper createAdsDtoMapper;
     private final AdsMapperSamopiska samopiskaAds;
 
-
-    public AdsServiceImpl(AdsRepository adsRepository,  FullAdsMapperSamopiska samopiskaFullAds, CreateAdsDtoMapper createAdsDtoMapper, AdsMapperSamopiska samopiskaAds) {
+    public AdsServiceImpl(AdsRepository adsRepository,  FullAdsMapperSamopiska samopiskaFullAds,
+                          CreateAdsDtoMapper createAdsDtoMapper, AdsMapperSamopiska samopiskaAds) {
         this.adsRepository = adsRepository;
         this.samopiskaFullAds = samopiskaFullAds;
         this.createAdsDtoMapper = createAdsDtoMapper;
@@ -66,4 +68,5 @@ public class AdsServiceImpl implements AdsService {
 
         return samopiskaAds.adsToAdsDtoSamopiska(ads);
     }
+
 }

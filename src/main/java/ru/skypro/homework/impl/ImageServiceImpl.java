@@ -47,7 +47,7 @@ public class ImageServiceImpl implements ImageService {
         ) {
             bis.transferTo(bos);
         }
-        Image image = imageRepository.findById(adsId).get();
+        Image image = imageRepository.findById(adsId).orElseGet(Image::new);
         image.setAds(ads);
         image.setFilePath(filePath.toString());
         image.setFileSize(imageFile.getSize());
@@ -60,4 +60,7 @@ public class ImageServiceImpl implements ImageService {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
+    public Image findImage(Long adsPk) {
+        return imageRepository.findByAdsPk(adsPk).orElseThrow();
+    }
 }

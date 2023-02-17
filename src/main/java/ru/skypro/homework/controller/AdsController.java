@@ -5,11 +5,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.impl.CommentServiceImpl;
 import ru.skypro.homework.impl.ImageServiceImpl;
 import ru.skypro.homework.service.AdsService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
@@ -94,6 +100,28 @@ public class AdsController {
     @GetMapping("me")
     public ResponseWrapperAdsDto getAdsMe() {
         return new ResponseWrapperAdsDto();
+    }
+
+    @PostMapping(value = "{adsPk}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity <String> uploadImage (@PathVariable Long adsPk, @RequestParam MultipartFile image) throws IOException {
+        imageService.uploadImage(adsPk, image);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping (value = "/{adsPk}/image")
+    public void downloadImage (@PathVariable Long adsPk, HttpServletResponse response) throws IOException {
+        Image image = imageService.findImage(adsPk);
+
+        Path path = Path.of(image.getFilePath());
+
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream()) {
+
+            response.setStatus(200);
+            response.setContentType(image.getMediaType());
+            response.setContentLength((int)image.getFileSize());
+            is.transferTo(os);
+        }
     }
 }
 

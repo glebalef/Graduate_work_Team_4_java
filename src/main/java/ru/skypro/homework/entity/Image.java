@@ -15,7 +15,7 @@ import javax.persistence.*;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
         private String filePath;
-        private Long fileSize;
+        private long fileSize;
         private String mediaType;
         @Type(type = "org.hibernate.type.BinaryType")
         @Lob
