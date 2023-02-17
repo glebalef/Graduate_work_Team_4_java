@@ -27,14 +27,15 @@ public class ImageServiceImpl implements ImageService {
         this.imageRepository = imageRepository;
     }
 
-    AdsRepository adsRepository;
-    AdsServiceImpl adsServiceImpl;
-    ImageRepository imageRepository;
+    private final AdsRepository adsRepository;
+    private final AdsServiceImpl adsServiceImpl;
+    private final ImageRepository imageRepository;
     @Value("${path.to.images.folder}")
     private String imagesDir;
+
     @Override
     public void uploadImage(Long adsId, MultipartFile imageFile) throws IOException {
-      Ads ads =   adsRepository.findById(adsId).get();
+        Ads ads = adsRepository.findById(adsId).get();
         Path filePath = Path.of(imagesDir, adsId + "." + getExtensions(imageFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -54,8 +55,9 @@ public class ImageServiceImpl implements ImageService {
         image.setData(imageFile.getBytes());
         imageRepository.save(image);
     }
+
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-    }
+}
