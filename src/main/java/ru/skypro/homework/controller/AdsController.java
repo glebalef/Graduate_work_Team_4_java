@@ -7,9 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.impl.CommentServiceImpl;
 import ru.skypro.homework.impl.ImageServiceImpl;
-import ru.skypro.homework.repository.AdsRepository;
-import ru.skypro.homework.repository.AvatarRepository;
-import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.service.AdsService;
 
 import java.io.IOException;
@@ -23,10 +20,7 @@ public class AdsController {
     private final AdsService adsService;
     private final ImageServiceImpl imageService;
 
-    AdsController(CommentServiceImpl commentService, AdsService adsService, ImageServiceImpl imageService,
-                  AdsRepository adsRepository,
-                  AvatarRepository avatarRepository,
-                  ImageRepository imageRepository) {
+    AdsController(CommentServiceImpl commentService, AdsService adsService, ImageServiceImpl imageService) {
         this.commentService = commentService;
         this.adsService = adsService;
         this.imageService = imageService;
@@ -38,7 +32,7 @@ public class AdsController {
         return new AdsDto();
     }
 
-    @PostMapping( value = ""
+    @PostMapping(value = ""
             //consumes = {
             //MediaType.APPLICATION_JSON_VALUE,
             //MediaType.APPLICATION_OCTET_STREAM_VALUE}
@@ -48,8 +42,8 @@ public class AdsController {
 
         adsService.addAds(properties);
         Long id = adsService.addAds(properties).getPk();
-                //imageService.uploadImage(id, image);
-        return  adsService.getAds(id);
+        //imageService.uploadImage(id, image);
+        return adsService.getAds(id);
     }
 
     // /ads/{id}
@@ -71,28 +65,28 @@ public class AdsController {
 
     // {ad_pk}/comments/{id}
     @GetMapping("{adPk}/comments/{id}")
-    public ResponseEntity <CommentDto> getComments(@PathVariable Long adPk, @PathVariable Long id) {
+    public ResponseEntity<CommentDto> getComments(@PathVariable Long adPk, @PathVariable Long id) {
         CommentDto commentDto = commentService.getComments(id);
         if (commentDto == null) {
-            ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(commentDto);
     }
 
     @DeleteMapping("{adPk}/comments/{id}")
     public ResponseEntity<Void> deleteComments(@PathVariable Long adPk,
-                                         @PathVariable Long id) {
+                                               @PathVariable Long id) {
         commentService.deleteComments(id);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping ("{adPk}/comments/{id}")
-    public ResponseEntity <CommentDto> updateComments(@PathVariable Long adPk,
-                                    @PathVariable Long id,
-                                     @RequestBody CommentDto comment) {
+    @PatchMapping("{adPk}/comments/{id}")
+    public ResponseEntity<CommentDto> updateComments(@PathVariable Long adPk,
+                                                     @PathVariable Long id,
+                                                     @RequestBody CommentDto comment) {
         CommentDto commentDto = commentService.updateComments(adPk, id, comment);
         if (commentDto == null) {
-            ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(commentDto);
     }
