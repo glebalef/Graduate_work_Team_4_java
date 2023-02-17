@@ -7,8 +7,8 @@ import ru.skypro.homework.entity.Ads;
 
 public interface AdsService {
     public AdsDto getAds(Long pk);
-    public CreateAdsDto addAds(CreateAdsDto createAdsDto);
+    public AdsDto addAds(CreateAdsDto createAdsDto);
     public FullAdsDto getFullAds(Long pk);
     public FullAdsDto removeFullAds(Long pk);
-    public FullAdsDto updateAds(Long pk, CreateAdsDto createAdsDto);
+    public AdsDto updateAds(Long pk, CreateAdsDto createAdsDto);
 }
