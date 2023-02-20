@@ -8,9 +8,11 @@ import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.impl.CommentServiceImpl;
 import ru.skypro.homework.impl.ImageServiceImpl;
+import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.service.AdsService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.OctetStreamData;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,30 +27,35 @@ public class AdsController {
     private final CommentServiceImpl commentService;
     private final AdsService adsService;
     private final ImageServiceImpl imageService;
+    private final AdsRepository adsRepository;
 
-    AdsController(CommentServiceImpl commentService, AdsService adsService, ImageServiceImpl imageService) {
+    AdsController(CommentServiceImpl commentService, AdsService adsService, ImageServiceImpl imageService,
+                  AdsRepository adsRepository) {
         this.commentService = commentService;
         this.adsService = adsService;
         this.imageService = imageService;
+        this.adsRepository = adsRepository;
     }
 
     // /ads
     @GetMapping("")
-    public AdsDto getAds() {
-        return new AdsDto();
+    public ResponseWrapperAdsDto getAllAds() {
+        Long id = 1L; //пока так
+        return adsService.getAllAds(id);
     }
 
-    @PostMapping(value = ""
-            //consumes = {
-            //MediaType.APPLICATION_JSON_VALUE,
-            //MediaType.APPLICATION_OCTET_STREAM_VALUE}
+    @PostMapping(value = "",
+            consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE}
     )
-    public AdsDto addAds(@RequestBody(required = true) CreateAdsDto properties)
+    public AdsDto addAds(@RequestPart(required = true) CreateAdsDto properties,
+                         @RequestPart MultipartFile image)
             throws IOException {
 
         adsService.addAds(properties);
         Long id = adsService.addAds(properties).getPk();
-        //imageService.uploadImage(id, image);
+        imageService.uploadImage(id, image);
         return adsService.getAds(id);
     }
 

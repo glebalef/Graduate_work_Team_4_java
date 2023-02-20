@@ -5,13 +5,12 @@
         import ru.skypro.homework.dto.AdsDto;
         import ru.skypro.homework.dto.CreateAdsDto;
         import ru.skypro.homework.dto.FullAdsDto;
+        import ru.skypro.homework.dto.ResponseWrapperAdsDto;
         import ru.skypro.homework.entity.Ads;
-        import ru.skypro.homework.entity.Image;
-        import ru.skypro.homework.mapper.AdsMapperSamopiska;
+        import ru.skypro.homework.mapper.AdsMapper;
         import ru.skypro.homework.mapper.CreateAdsDtoMapper;
-        import ru.skypro.homework.mapper.FullAdsMapperSamopiska;
+        import ru.skypro.homework.mapper.FullAdsMapper;
         import ru.skypro.homework.repository.AdsRepository;
-        import ru.skypro.homework.repository.ImageRepository;
         import ru.skypro.homework.service.AdsService;
 
         import java.util.Objects;
@@ -20,36 +19,36 @@
 public class AdsServiceImpl implements AdsService {
 
     private final AdsRepository adsRepository;
-
-    private final FullAdsMapperSamopiska samopiskaFullAds;
     private final CreateAdsDtoMapper createAdsDtoMapper;
-    private final AdsMapperSamopiska samopiskaAds;
+    private final AdsMapper adsMapper;
+    private final FullAdsMapper fullAdsMapper;
 
-    public AdsServiceImpl(AdsRepository adsRepository,  FullAdsMapperSamopiska samopiskaFullAds,
-                          CreateAdsDtoMapper createAdsDtoMapper, AdsMapperSamopiska samopiskaAds) {
+
+    public AdsServiceImpl(AdsRepository adsRepository,
+                          CreateAdsDtoMapper createAdsDtoMapper, AdsMapper adsMapper, FullAdsMapper fullAdsMapper) {
         this.adsRepository = adsRepository;
-        this.samopiskaFullAds = samopiskaFullAds;
         this.createAdsDtoMapper = createAdsDtoMapper;
-        this.samopiskaAds = samopiskaAds;
+        this.adsMapper = adsMapper;
+        this.fullAdsMapper = fullAdsMapper;
     }
 
     @Override
     public AdsDto getAds(Long pk) {
        Ads ads =  adsRepository.findById(pk).orElse(null);
         assert ads != null;
-        return samopiskaAds.adsToAdsDtoSamopiska(ads);
+        return adsMapper.adsToAdsDto(ads);
     }
 
     @Override
     public AdsDto addAds(CreateAdsDto createAdsDto) {
         Ads ads = createAdsDtoMapper.createAdsDtoToAds(createAdsDto);
         adsRepository.save(ads);
-        return samopiskaAds.adsToAdsDtoSamopiska(adsRepository.save(ads));
+        return adsMapper.adsToAdsDto(adsRepository.save(ads));
     }
 
     @Override
     public FullAdsDto getFullAds(Long pk) {
-        return samopiskaFullAds.adsToFullAdsDtoSamopiska(Objects.requireNonNull(adsRepository.findById(pk).orElse(null)));
+        return fullAdsMapper.adsToFullAdsDto(Objects.requireNonNull(adsRepository.findById(pk).orElse(null)));
     }
 
     @Override
@@ -66,7 +65,13 @@ public class AdsServiceImpl implements AdsService {
         ads.setTitle(createAdsDto.getTitle());
         adsRepository.save(ads);
 
-        return samopiskaAds.adsToAdsDtoSamopiska(ads);
+        return adsMapper.adsToAdsDto(ads);
     }
 
+    public ResponseWrapperAdsDto getAllAds (Long id) {
+        ResponseWrapperAdsDto  wrapper = new ResponseWrapperAdsDto();
+        wrapper.setResults(adsRepository.findAllByUserId(id));
+        wrapper.setCount(adsRepository.findAllByUserId(id).size());
+        return wrapper;
+    }
 }
