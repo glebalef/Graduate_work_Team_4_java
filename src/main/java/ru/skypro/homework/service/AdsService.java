@@ -13,4 +13,6 @@ public interface AdsService {
     public FullAdsDto removeFullAds(Long pk);
     public AdsDto updateAds(Long pk, CreateAdsDto createAdsDto);
     public ResponseWrapperAdsDto getAllAds (Long id);
+    public ResponseWrapperAdsDto findAds (String part);
+    public ResponseWrapperAdsDto getAll ();
 }
