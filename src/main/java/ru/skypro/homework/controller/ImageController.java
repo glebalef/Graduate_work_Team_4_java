@@ -1,38 +1,33 @@
-//package ru.skypro.homework.controller;
-//
-//import org.springframework.http.MediaType;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.multipart.MultipartFile;
-//import ru.skypro.homework.entity.Image;
-//import ru.skypro.homework.repository.ImageRepository;
-//import ru.skypro.homework.service.ImageService;
-//
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//@RequestMapping("/image")
-//@CrossOrigin(value = "http://localhost:3000")
-//@RestController
-//public class ImageController {
-//
-//    private final ImageService imageService;
-//    private final ImageRepository imageRepository;
-//
-//    public ImageController(ImageService imageService, ImageRepository imageRepository) {
-//        this.imageService = imageService;
-//        this.imageRepository = imageRepository;
-//    }
-//
-//    @PostMapping( value = "", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public List<String> updateImage (@RequestParam int id,
-//                                     @RequestParam MultipartFile pic) throws IOException {
-//        Image image = new Image();
-//        image.setData(pic.getBytes());
-//        image.setFilePath(pic.getOriginalFilename());
-//        image.setMediaType(pic.getContentType());
-//        imageRepository.save(image);
-//
-//        return new ArrayList<String>();
-//    }
-//}
+package ru.skypro.homework.controller;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.entity.Image;
+import ru.skypro.homework.repository.ImageRepository;
+import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.ImageService;
+
+import java.io.IOException;
+
+@RequestMapping("/image")
+@CrossOrigin(value = "http://localhost:3000")
+@RestController
+public class ImageController {
+
+    private final ImageService imageService;
+    private final AdsService adsService;
+
+    public ImageController(ImageService imageService,  AdsService adsService) {
+        this.imageService = imageService;
+        this.adsService = adsService;
+    }
+    @PatchMapping( value = "/{id}", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String updateImage (
+            @RequestParam MultipartFile pic,
+            @PathVariable Long id) throws IOException {
+        imageService.uploadImage(id, pic);
+
+        return pic.getName();
+    }
+}

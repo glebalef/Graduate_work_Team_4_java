@@ -1,11 +1,11 @@
 package ru.skypro.homework.controller;
 
-import liquibase.pro.packaged.S;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.impl.CommentServiceImpl;
 import ru.skypro.homework.impl.ImageServiceImpl;
@@ -13,12 +13,14 @@ import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.service.AdsService;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.OctetStreamData;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
@@ -31,32 +33,38 @@ public class AdsController {
     private final AdsRepository adsRepository;
 
     AdsController(CommentServiceImpl commentService, AdsService adsService, ImageServiceImpl imageService,
-                  AdsRepository adsRepository) {
+                  AdsRepository adsRepository, AdsRepository adsRepository1) {
         this.commentService = commentService;
         this.adsService = adsService;
         this.imageService = imageService;
-        this.adsRepository = adsRepository;
+        this.adsRepository = adsRepository1;
     }
 
     // /ads
     @GetMapping("")
     public ResponseWrapperAdsDto getALLAds() {
-        Long id = 1L; //пока так
         return adsService.getAll();
     }
 
     @PostMapping(value = "",
-            consumes = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE}
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
     )
     public AdsDto addAds(@RequestPart(required = true) CreateAdsDto properties,
-                         @RequestPart MultipartFile image)
+                         @RequestPart(required = false) MultipartFile image)
             throws IOException {
+        // создаем сущность Ads
+       Long id =  adsService.addAds(properties).getPk(); // сохранили в базу, вытащили id
 
-        adsService.addAds(properties);
-        Long id = adsService.addAds(properties).getPk();
+        // сохраняем сущность Image
         imageService.uploadImage(id, image);
+
+        // добавили картинку к Ads
+        List<Image> images = new ArrayList<Image>();
+        images.add(imageService.findImage(id));
+        Ads reWrite = Objects.requireNonNull(adsRepository.findById(id).orElse(null));
+        reWrite.setImage(images);
+        adsRepository.save(reWrite);
+
         return adsService.getAds(id);
     }
 
@@ -116,9 +124,9 @@ public class AdsController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping (value = "/{adsPk}/image")
-    public void downloadImage (@PathVariable Long adsPk, HttpServletResponse response) throws IOException {
-        Image image = imageService.findImage(adsPk);
+    @PostMapping
+    public void updateAdsImage (@PathVariable Long id, HttpServletResponse response) throws IOException {
+        Image image = imageService.findImage(id);
 
         Path path = Path.of(image.getFilePath());
 
@@ -130,6 +138,11 @@ public class AdsController {
             response.setContentLength((int)image.getFileSize());
             is.transferTo(os);
         }
+    }
+    // метод поиска для тренировка
+    @GetMapping("/search")
+    public Ads searchAds (@RequestParam Long part) {
+       return adsService.getAdsNotDtoById(part);
     }
 }
 
