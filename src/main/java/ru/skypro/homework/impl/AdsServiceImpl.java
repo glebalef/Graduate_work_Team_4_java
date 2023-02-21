@@ -12,11 +12,14 @@
         import ru.skypro.homework.mapper.FullAdsMapper;
         import ru.skypro.homework.repository.AdsRepository;
         import ru.skypro.homework.service.AdsService;
+        import ru.skypro.homework.service.ImageService;
 
+        import java.util.ArrayList;
+        import java.util.List;
         import java.util.Objects;
 
         @Service
-public class AdsServiceImpl implements AdsService {
+        public class AdsServiceImpl implements AdsService {
 
     private final AdsRepository adsRepository;
     private final CreateAdsDtoMapper createAdsDtoMapper;
@@ -24,13 +27,13 @@ public class AdsServiceImpl implements AdsService {
     private final FullAdsMapper fullAdsMapper;
 
 
-    public AdsServiceImpl(AdsRepository adsRepository,
-                          CreateAdsDtoMapper createAdsDtoMapper, AdsMapper adsMapper, FullAdsMapper fullAdsMapper) {
+            public AdsServiceImpl(AdsRepository adsRepository,
+                          CreateAdsDtoMapper createAdsDtoMapper, AdsMapper adsMapper, FullAdsMapper fullAdsMapper, ImageService imageService) {
         this.adsRepository = adsRepository;
         this.createAdsDtoMapper = createAdsDtoMapper;
         this.adsMapper = adsMapper;
         this.fullAdsMapper = fullAdsMapper;
-    }
+            }
 
     @Override
     public AdsDto getAds(Long pk) {
@@ -48,6 +51,9 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public FullAdsDto getFullAds(Long pk) {
+        FullAdsDto Dto = fullAdsMapper.adsToFullAdsDto(Objects.requireNonNull(adsRepository.findById(pk).orElse(null)));
+
+
         return fullAdsMapper.adsToFullAdsDto(Objects.requireNonNull(adsRepository.findById(pk).orElse(null)));
     }
 
@@ -68,24 +74,30 @@ public class AdsServiceImpl implements AdsService {
         return adsMapper.adsToAdsDto(ads);
     }
 
-    public ResponseWrapperAdsDto getAllAds (Long id) {
-        ResponseWrapperAdsDto  wrapper = new ResponseWrapperAdsDto();
-        wrapper.setResults(adsRepository.findAllByUserId(id));
-        wrapper.setCount(adsRepository.findAllByUserId(id).size());
-        return wrapper;
-    }
+            @Override
+            public ResponseWrapperAdsDto getAllAds(Long id) {
+                return null;
+            }
 
-    public ResponseWrapperAdsDto findAds (String part) {
-        ResponseWrapperAdsDto  wrapper = new ResponseWrapperAdsDto();
-        wrapper.setResults(adsRepository.findByTitleLike(part));
-        wrapper.setCount(adsRepository.findByTitleLike(part).size());
-        return wrapper;
-    }
 
-    public ResponseWrapperAdsDto getAll () {
-        ResponseWrapperAdsDto wrapper = new ResponseWrapperAdsDto();
-        wrapper.setResults(adsRepository.findAll());
-        wrapper.setCount(adsRepository.findAll().size());
-        return wrapper;
+            @Override
+            public ResponseWrapperAdsDto getAll () {
+                ResponseWrapperAdsDto wrapper = new ResponseWrapperAdsDto();
+                List<AdsDto> list = new ArrayList<>();
+                for (Ads value : adsRepository.findAll()) {
+                    list.add(adsMapper.adsToAdsDto(value));
+                }
+                wrapper.setResults(list);
+                wrapper.setCount(list.size());
+                return wrapper;
+
+            }
+            @Override
+            public Ads getAdsNotDtoById (Long id) {
+                return adsRepository.findById(id).orElse(null);
     }
+            @Override
+            public List<Ads> searchAds(String part) {
+                return adsRepository.findByTitleLikeIgnoreCase(part);
+            }
 }

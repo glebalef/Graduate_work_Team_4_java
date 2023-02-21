@@ -1,5 +1,6 @@
 package ru.skypro.homework.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,10 @@ public class Ads {
     private String title;
     @ManyToOne
     private User user;
-    @Transient
+    @OneToMany (
+            mappedBy = "ads",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List <Image> image;
     private Long price;
 }

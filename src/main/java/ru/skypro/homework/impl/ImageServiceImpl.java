@@ -15,27 +15,28 @@ import ru.skypro.homework.service.ImageService;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 @Transactional
 public class ImageServiceImpl implements ImageService {
-    public ImageServiceImpl(AdsRepository adsRepository, AdsServiceImpl adsServiceImpl, ImageRepository imageRepository) {
+    public ImageServiceImpl(AdsRepository adsRepository, ImageRepository imageRepository) {
         this.adsRepository = adsRepository;
-        this.adsServiceImpl = adsServiceImpl;
         this.imageRepository = imageRepository;
     }
 
     private final AdsRepository adsRepository;
-    private final AdsServiceImpl adsServiceImpl;
     private final ImageRepository imageRepository;
     @Value("${path.to.images.folder}")
     private String imagesDir;
 
     @Override
     public void uploadImage(Long adsId, MultipartFile imageFile) throws IOException {
-        Ads ads = adsRepository.findById(adsId).get();
+        Ads ads = adsRepository.findById(adsId).orElse(null);
         Path filePath = Path.of(imagesDir, adsId + "." + getExtensions(imageFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -54,6 +55,7 @@ public class ImageServiceImpl implements ImageService {
         image.setMediaType(imageFile.getContentType());
         image.setData(imageFile.getBytes());
         imageRepository.save(image);
+
     }
 
     private String getExtensions(String fileName) {
@@ -61,6 +63,16 @@ public class ImageServiceImpl implements ImageService {
     }
 
     public Image findImage(Long adsPk) {
-        return imageRepository.findByAdsPk(adsPk).orElseThrow();
+        return imageRepository.findImageByAds_pk(adsPk);
+    }
+
+
+    public List<String> findFilePathsByAdsPk(Long adsPk) {
+
+        List<String> list = new ArrayList<>();
+        for (Image value : imageRepository.findImagesByAds_Pk(adsPk)) {
+            list.add(value.getFilePath());
+        }
+        return list;
     }
 }

@@ -33,7 +33,9 @@ CREATE TABLE ads
     description VARCHAR,
     title       VARCHAR,
     user_id     BIGINT REFERENCES users (id),
-    price       BIGINT
+    price       BIGINT,
+    image_ads   VARCHAR[]
+
 );
 
 -- changeset GlebD:5
