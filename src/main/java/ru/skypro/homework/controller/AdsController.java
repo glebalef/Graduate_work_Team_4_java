@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import liquibase.pro.packaged.S;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,9 +40,9 @@ public class AdsController {
 
     // /ads
     @GetMapping("")
-    public ResponseWrapperAdsDto getAllAds() {
+    public ResponseWrapperAdsDto getALLAds() {
         Long id = 1L; //пока так
-        return adsService.getAllAds(id);
+        return adsService.getAll();
     }
 
     @PostMapping(value = "",
@@ -61,7 +62,7 @@ public class AdsController {
 
     // /ads/{id}
     @GetMapping("{id}")
-    public FullAdsDto getFullAd(@PathVariable Long id) {
+    public FullAdsDto getAds(@PathVariable Long id) {
         return adsService.getFullAds(id);
     }
 

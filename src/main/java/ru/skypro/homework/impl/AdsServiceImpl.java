@@ -74,4 +74,18 @@ public class AdsServiceImpl implements AdsService {
         wrapper.setCount(adsRepository.findAllByUserId(id).size());
         return wrapper;
     }
+
+    public ResponseWrapperAdsDto findAds (String part) {
+        ResponseWrapperAdsDto  wrapper = new ResponseWrapperAdsDto();
+        wrapper.setResults(adsRepository.findByTitleLike(part));
+        wrapper.setCount(adsRepository.findByTitleLike(part).size());
+        return wrapper;
+    }
+
+    public ResponseWrapperAdsDto getAll () {
+        ResponseWrapperAdsDto wrapper = new ResponseWrapperAdsDto();
+        wrapper.setResults(adsRepository.findAll());
+        wrapper.setCount(adsRepository.findAll().size());
+        return wrapper;
+    }
 }
