@@ -1,4 +1,4 @@
-package ru.skypro.homework.impl;
+package ru.skypro.homework.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
             userFound.setPhone(userDto.getPhone());
             userFound.setCity(userDto.getCity());
             userRepository.save(userFound);
-            return UserMapper.INSTANCE.usertoUserDto(userFound);
+            return UserMapper.INSTANCE.userToUserDto(userFound);
         }
         return null;
     }

@@ -7,10 +7,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Image;
-import ru.skypro.homework.impl.CommentServiceImpl;
-import ru.skypro.homework.impl.ImageServiceImpl;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.CommentService;
+import ru.skypro.homework.service.ImageService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,13 +27,13 @@ import java.util.Objects;
 @RestController
 public class AdsController {
 
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
     private final AdsService adsService;
-    private final ImageServiceImpl imageService;
+    private final ImageService imageService;
     private final AdsRepository adsRepository;
 
-    AdsController(CommentServiceImpl commentService, AdsService adsService, ImageServiceImpl imageService,
-                  AdsRepository adsRepository, AdsRepository adsRepository1) {
+    AdsController(CommentService commentService, AdsService adsService, ImageService imageService,
+                  AdsRepository adsRepository1) {
         this.commentService = commentService;
         this.adsService = adsService;
         this.imageService = imageService;

@@ -8,9 +8,9 @@ import ru.skypro.homework.entity.User;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
-    UserDto usertoUserDto(User user);
+    UserDto userToUserDto(User user);
 
-    User userDtotoUser(UserDto userDto);
+    User userDtoToUser(UserDto userDto);
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
