@@ -13,10 +13,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Comment {
     @ManyToOne
-    private User user;
+    private UserInfo userInfo;
+    @Column(name = "created_at")
     private String createdAt;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk")
     private Long pk;
+    @Column(name = "text")
     private String text;
 }

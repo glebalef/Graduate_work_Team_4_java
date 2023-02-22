@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface AdsRepository extends JpaRepository<Ads, Long> {
-    public List<Ads> findAllByUserId (Long id);
+    public List<Ads> findAllByUserInfoId (Long id);
     @NotNull List<Ads> findAll();
 
     List<Ads> findByTitleLikeIgnoreCase(String part);
