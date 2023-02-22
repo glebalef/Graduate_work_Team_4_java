@@ -11,6 +11,7 @@
         import ru.skypro.homework.mapper.CreateAdsDtoMapper;
         import ru.skypro.homework.mapper.FullAdsMapper;
         import ru.skypro.homework.repository.AdsRepository;
+        import ru.skypro.homework.repository.AvatarRepository;
         import ru.skypro.homework.service.AdsService;
         import ru.skypro.homework.service.ImageService;
 
@@ -25,14 +26,17 @@
             private final CreateAdsDtoMapper createAdsDtoMapper;
             private final AdsMapper adsMapper;
             private final FullAdsMapper fullAdsMapper;
+            private final AvatarRepository avatarRepository;
 
 
             public AdsServiceImpl(AdsRepository adsRepository,
-                                  CreateAdsDtoMapper createAdsDtoMapper, AdsMapper adsMapper, FullAdsMapper fullAdsMapper, ImageService imageService) {
+                                  CreateAdsDtoMapper createAdsDtoMapper, AdsMapper adsMapper, FullAdsMapper fullAdsMapper, ImageService imageService,
+                                  AvatarRepository avatarRepository) {
                 this.adsRepository = adsRepository;
                 this.createAdsDtoMapper = createAdsDtoMapper;
                 this.adsMapper = adsMapper;
                 this.fullAdsMapper = fullAdsMapper;
+                this.avatarRepository = avatarRepository;
             }
 
             @Override
@@ -40,6 +44,11 @@
                 Ads ads = adsRepository.findById(pk).orElse(null);
                 assert ads != null;
                 return adsMapper.adsToAdsDto(ads);
+            }
+
+            @Override
+            public void justSaveAds (Ads ads) {
+                adsRepository.save(ads);
             }
 
             @Override

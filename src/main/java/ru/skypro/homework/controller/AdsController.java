@@ -34,14 +34,12 @@ public class AdsController {
     private final CommentService commentService;
     private final AdsService adsService;
     private final ImageService imageService;
-    private final AdsRepository adsRepository;
 
     AdsController(CommentService commentService, AdsService adsService, ImageService imageService,
                   AdsRepository adsRepository1) {
         this.commentService = commentService;
         this.adsService = adsService;
         this.imageService = imageService;
-        this.adsRepository = adsRepository1;
     }
 
     // /ads
@@ -66,9 +64,9 @@ public class AdsController {
         // добавили картинку к Ads
         List<Image> images = new ArrayList<Image>();
         images.add(imageService.findImage(id));
-        Ads reWrite = Objects.requireNonNull(adsRepository.findById(id).orElse(null));
+        Ads reWrite = Objects.requireNonNull(adsService.getAdsNotDtoById(id));
         reWrite.setImage(images);
-        adsRepository.save(reWrite);
+        adsService.justSaveAds(reWrite);
 
         return adsService.getAds(id);
     }

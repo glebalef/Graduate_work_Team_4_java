@@ -73,4 +73,11 @@ public class ImageServiceImpl implements ImageService {
         }
         return list;
     }
+
+    public void imageReWrite (Long id) {
+    List<Image> images = new ArrayList<Image>();
+    Ads reWrite = Objects.requireNonNull(adsRepository.findById(id).orElse(null));
+    reWrite.setImage(images);
+    adsRepository.save(reWrite);
+}
 }
