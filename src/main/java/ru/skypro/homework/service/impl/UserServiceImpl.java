@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.mapper.UserMapper;
+
 import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto) {
         logger.debug("Was invoked method for editing user: {}", userDto);
 
+
         Optional<UserInfo> foundUser = userRepository.findById(userDto.getId());
         if (foundUser.isPresent()) {
             UserInfo userFound = foundUser.get();
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
             userFound.setPhone(userDto.getPhone());
             userFound.setCity(userDto.getCity());
             userRepository.save(userFound);
+
             return UserMapper.INSTANCE.usertoUserDto(userFound);
         }
         return null;
