@@ -16,8 +16,8 @@ public interface FullAdsMapper {
     FullAdsMapper INSTANCE = Mappers.getMapper(FullAdsMapper.class);
 
     @Mapping(source = "image", target = "image", qualifiedBy = ImageToPathMapper.class)
-    @Mapping(source = "user.firstName", target = "authorFirstName")
-    @Mapping(source = "user.lastName", target = "authorLastName")
+    @Mapping(source = "userInfo.firstName", target = "authorFirstName")
+    @Mapping(source = "userInfo.lastName", target = "authorLastName")
     FullAdsDto adsToFullAdsDto(Ads ads);
 
     @ImageToPathMapper
