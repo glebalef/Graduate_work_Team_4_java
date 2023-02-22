@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.ImageService;
 
+import javax.persistence.Basic;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +23,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static liquibase.repackaged.net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
@@ -51,6 +55,7 @@ public class AdsController {
     )
     public AdsDto addAds(@RequestPart(required = true) CreateAdsDto properties,
                          @RequestPart(required = false) MultipartFile image)
+
             throws IOException {
         // создаем сущность Ads
        Long id =  adsService.addAds(properties).getPk(); // сохранили в базу, вытащили id
@@ -139,10 +144,10 @@ public class AdsController {
             is.transferTo(os);
         }
     }
-    // метод поиска для тренировка
+    // метод поиска для тренировки
     @GetMapping("/search")
-    public Ads searchAds (@RequestParam Long part) {
-       return adsService.getAdsNotDtoById(part);
+    public ResponseWrapperAdsDto searchAds (@RequestParam String search) {
+       return adsService.searchAds(search);
     }
 }
 
