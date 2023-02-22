@@ -1,5 +1,5 @@
 
-        package ru.skypro.homework.impl;
+        package ru.skypro.homework.service.impl;
 
         import org.springframework.stereotype.Service;
         import ru.skypro.homework.dto.AdsDto;

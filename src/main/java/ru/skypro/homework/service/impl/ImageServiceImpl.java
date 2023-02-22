@@ -1,6 +1,5 @@
-package ru.skypro.homework.impl;
+package ru.skypro.homework.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +8,6 @@ import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.ImageRepository;
-import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 
 import java.io.*;
