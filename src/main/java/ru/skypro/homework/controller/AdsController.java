@@ -6,8 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ads;
+import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
+import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdsRepository;
+import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.ImageService;
@@ -18,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,14 +34,14 @@ public class AdsController {
     private final CommentService commentService;
     private final AdsService adsService;
     private final ImageService imageService;
-    private final AdsRepository adsRepository;
+    private final CommentRepository commentRepository;
 
     AdsController(CommentService commentService, AdsService adsService, ImageService imageService,
-                  AdsRepository adsRepository1) {
+                  AdsRepository adsRepository1, CommentRepository commentRepository) {
         this.commentService = commentService;
         this.adsService = adsService;
         this.imageService = imageService;
-        this.adsRepository = adsRepository1;
+        this.commentRepository = commentRepository;
     }
 
     // /ads
@@ -61,9 +65,9 @@ public class AdsController {
         // добавили картинку к Ads
         List<Image> images = new ArrayList<Image>();
         images.add(imageService.findImage(id));
-        Ads reWrite = Objects.requireNonNull(adsRepository.findById(id).orElse(null));
+        Ads reWrite = Objects.requireNonNull(adsService.getAdsNotDtoById(id));
         reWrite.setImage(images);
-        adsRepository.save(reWrite);
+        adsService.justSaveAds(reWrite);
 
         return adsService.getAds(id);
     }
@@ -83,6 +87,30 @@ public class AdsController {
     public AdsDto updateAds(@PathVariable Long id, @RequestBody CreateAdsDto ads) {
         return adsService.updateAds(id, ads);
     }
+
+    // Комментарии (Comments)
+
+    //ok
+    @PostMapping("{adPk}/comments")
+    public ResponseEntity<CommentDto> addComments(@PathVariable Long adPk,
+                                                  @RequestBody CommentDto commentDto) {
+
+        commentDto.setCreatedAt(LocalDateTime.now().toString());
+        Comment comment = CommentMapper.INSTANCE.commentDtoToEntity(commentDto);
+        commentRepository.save(comment);
+        if (commentDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(commentDto);
+    }
+
+    // ok
+    @GetMapping("{adPk}/comments")
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Long adPk) {
+
+        return ResponseEntity.ok(commentService.getAll());
+    }
+
 
 
     // {ad_pk}/comments/{id}
@@ -139,10 +167,10 @@ public class AdsController {
             is.transferTo(os);
         }
     }
-    // метод поиска для тренировка
+    // метод поиска для тренировки
     @GetMapping("/search")
-    public Ads searchAds (@RequestParam Long part) {
-       return adsService.getAdsNotDtoById(part);
+    public ResponseWrapperAdsDto searchAds (@RequestParam String search) {
+        return adsService.searchAds(search);
     }
 }
 

@@ -4,11 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.dto.ResponseWrapperComment;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.CommentService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -58,5 +61,18 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComments(Long id) {
         logger.debug("Invoke method deleteComments");
         commentRepository.deleteById(id);
+    }
+
+    @Override
+    public ResponseWrapperComment getAll() {
+        List<CommentDto> list = new ArrayList<>();
+        ResponseWrapperComment wrapper = new ResponseWrapperComment();
+        for (Comment value : commentRepository.findAll()) {
+            list.add(commentMapper.commentToDto(value));
+        }
+        wrapper.setResults(list);
+        wrapper.setCount(list.size());
+        return wrapper;
+
     }
 }
