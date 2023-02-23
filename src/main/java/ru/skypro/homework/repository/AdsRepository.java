@@ -13,7 +13,6 @@ public interface AdsRepository extends JpaRepository<Ads, Long> {
     public List<Ads> findAllByUserInfoId (Long id);
     @NotNull List<Ads> findAll();
 
-    List<Ads> findByTitleLikeIgnoreCase(String part);
+    List<Ads> findAdsByTitleOrDescriptionContainingIgnoreCase(String part1, String part2);
 
-    //List<Ads> findByTitleIsLikeIgnoreCase (String part);
 }

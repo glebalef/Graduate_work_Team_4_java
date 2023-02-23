@@ -19,5 +19,6 @@ public interface AdsService {
     public ResponseWrapperAdsDto getAllAds (Long id);
     public ResponseWrapperAdsDto getAll ();
     public Ads getAdsNotDtoById (Long id);
-    public List<Ads> searchAds(String part);
+    public ResponseWrapperAdsDto searchAds(String part);
+    public void justSaveAds (Ads ads);
 }
