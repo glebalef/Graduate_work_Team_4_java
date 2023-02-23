@@ -7,6 +7,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository <Comment, Long> {
-    @NotNull List<Comment> findAll();
+    @NotNull List<Comment> findCommentsByAds_Pk(Long ads_pk);
 
 }

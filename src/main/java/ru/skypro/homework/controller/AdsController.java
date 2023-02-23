@@ -96,8 +96,7 @@ public class AdsController {
                                                   @RequestBody CommentDto commentDto) {
 
         commentDto.setCreatedAt(LocalDateTime.now().toString());
-        Comment comment = CommentMapper.INSTANCE.commentDtoToEntity(commentDto);
-        commentRepository.save(comment);
+       commentService.addComments(commentDto, adPk);
         if (commentDto == null) {
             return ResponseEntity.notFound().build();
         }
@@ -108,7 +107,7 @@ public class AdsController {
     @GetMapping("{adPk}/comments")
     public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Long adPk) {
 
-        return ResponseEntity.ok(commentService.getAll());
+        return ResponseEntity.ok(commentService.getAll(adPk));
     }
 
 
@@ -123,18 +122,18 @@ public class AdsController {
         return ResponseEntity.ok(commentDto);
     }
 
-    @DeleteMapping("{adPk}/comments/{id}")
-    public ResponseEntity<Void> deleteComments(@PathVariable Long adPk,
+    @DeleteMapping("{ad_Pk}/comments/{id}")
+    public ResponseEntity<Void> deleteComments(@PathVariable Long ad_Pk,
                                                @PathVariable Long id) {
         commentService.deleteComments(id);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("{adPk}/comments/{id}")
-    public ResponseEntity<CommentDto> updateComments(@PathVariable Long adPk,
+    @PatchMapping("{ad_Pk}/comments/{id}")
+    public ResponseEntity<CommentDto> updateComments(@PathVariable Long ad_Pk,
                                                      @PathVariable Long id,
                                                      @RequestBody CommentDto comment) {
-        CommentDto commentDto = commentService.updateComments(adPk, id, comment);
+        CommentDto commentDto = commentService.updateComments(ad_Pk, id, comment);
         if (commentDto == null) {
             return ResponseEntity.badRequest().build();
         }

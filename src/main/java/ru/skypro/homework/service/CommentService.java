@@ -4,7 +4,7 @@ import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.ResponseWrapperComment;
 
 public interface CommentService {
-    CommentDto addComments (CommentDto commentDto);
+    CommentDto addComments (CommentDto commentDto, Long adPk);
 
     CommentDto getComments(Long id);
 
@@ -12,5 +12,5 @@ public interface CommentService {
 
     void deleteComments(Long id);
 
-    public ResponseWrapperComment getAll();
+    public ResponseWrapperComment getAll(Long adPk);
 }
