@@ -22,4 +22,7 @@ public class Comment {
     private Long pk;
     @Column(name = "text")
     private String text;
+
+    @ManyToOne
+    private Ads ads;
 }

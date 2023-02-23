@@ -30,6 +30,12 @@ public class Ads {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List <Image> image;
+
+    @OneToMany (
+            mappedBy = "ads",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Comment> comments;
     @Column(name = "price")
     private Long price;
 }

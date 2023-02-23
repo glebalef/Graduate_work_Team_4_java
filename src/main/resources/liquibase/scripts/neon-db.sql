@@ -25,6 +25,7 @@ create table comments
     created_at   varchar(255),
     text         varchar(255),
     user_info_id int8,
+    ads_pk     int8,
     primary key (pk)
 );
 create table image

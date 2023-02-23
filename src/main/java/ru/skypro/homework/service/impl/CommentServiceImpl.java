@@ -7,6 +7,7 @@ import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.ResponseWrapperComment;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.mapper.CommentMapper;
+import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.CommentService;
 
@@ -21,19 +22,23 @@ public class CommentServiceImpl implements CommentService {
     Logger logger = LoggerFactory.getLogger(CommentService.class);
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
+    private final AdsRepository adsRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper,
+                              AdsRepository adsRepository) {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
 
+        this.adsRepository = adsRepository;
     }
 
     @Override
-    public CommentDto addComments(CommentDto commentDto) {
+    public CommentDto addComments(CommentDto commentDto, Long adPk) {
         logger.debug("Invoke method addComments");
         Comment newComment = new Comment();
         newComment.setCreatedAt(commentDto.getCreatedAt());
         newComment.setText(commentDto.getText());
+        newComment.setAds(adsRepository.findById(adPk).orElse(null));
         commentRepository.save(newComment);
         return commentMapper.commentToDto(newComment);
     }
@@ -64,10 +69,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseWrapperComment getAll() {
+    public ResponseWrapperComment getAll(Long adPk) {
         List<CommentDto> list = new ArrayList<>();
         ResponseWrapperComment wrapper = new ResponseWrapperComment();
-        for (Comment value : commentRepository.findAll()) {
+        for (Comment value : commentRepository.findCommentsByAds_Pk(adPk)) {
             list.add(commentMapper.commentToDto(value));
         }
         wrapper.setResults(list);
