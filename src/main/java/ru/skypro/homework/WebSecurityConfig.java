@@ -2,7 +2,6 @@ package ru.skypro.homework;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,11 +24,8 @@ public class WebSecurityConfig {
     @Bean
 
     public JdbcUserDetailsManager userDetailsService(DataSource dataSource) {
-
         return new JdbcUserDetailsManager(dataSource);
     }
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -40,7 +36,7 @@ public class WebSecurityConfig {
                                 .mvcMatchers("/ads/**", "/users/**").authenticated()
 
                 )
-                .cors().disable()
+                .cors().and()
                 .httpBasic(withDefaults());
         return http.build();
     }

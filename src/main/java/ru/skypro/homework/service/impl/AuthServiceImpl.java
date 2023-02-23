@@ -1,10 +1,12 @@
 package ru.skypro.homework.service.impl;
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.entity.UserInfo;
@@ -54,4 +56,19 @@ public class AuthServiceImpl implements AuthService {
 
         return true;
     }
+
+    @Override
+    public boolean changePassword(NewPasswordDto newPasswordDto, String email) {
+        UserInfo userInfo = userRepository.findByEmail(email);
+        String oldPassword = newPasswordDto.getCurrentPassword();
+        String newPassword = newPasswordDto.getNewPassword();
+        if (oldPassword != null || encoder.matches(newPassword, userInfo.getPassword())) {
+            manager.changePassword(oldPassword, "{bcrypt}" + encoder.encode(newPassword));
+            userInfo.setPassword(newPassword);
+            userRepository.save(userInfo);
+            return true;
+        }
+        return false;
+    }
+
 }

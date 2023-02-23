@@ -3,11 +3,9 @@ package ru.skypro.homework.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
-import ru.skypro.homework.mapper.UserMapper;
-
 import ru.skypro.homework.entity.UserInfo;
+import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 
@@ -23,12 +21,6 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
 
-    }
-
-    @Override
-    public NewPasswordDto setPassword(NewPasswordDto newPasswordDto) {
-        logger.debug("Was invoked method for setting new password: {}", newPasswordDto);
-        return null;
     }
 
     @Override
@@ -52,9 +44,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser() {
+    public UserDto getUser(String email) {
         logger.debug("Was invoked method for getting user");
-        return null;
+        UserInfo userFound = userRepository.findByEmail(email);
+        return UserMapper.INSTANCE.usertoUserDto(userFound);
     }
 
     @Override
