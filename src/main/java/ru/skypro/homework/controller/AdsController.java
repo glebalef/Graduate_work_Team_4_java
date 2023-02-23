@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ads;
+import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
+import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdsRepository;
+import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.ImageService;
@@ -20,6 +23,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,15 +42,18 @@ public class AdsController {
     private final CommentService commentService;
     private final AdsService adsService;
     private final ImageService imageService;
+    private final CommentRepository commentRepository;
 
     AdsController(CommentService commentService, AdsService adsService, ImageService imageService,
-                  AdsRepository adsRepository1) {
+                  AdsRepository adsRepository1,
+                  CommentRepository commentRepository) {
         this.commentService = commentService;
         this.adsService = adsService;
         this.imageService = imageService;
+        this.commentRepository = commentRepository;
     }
 
-    // /ads
+    // Объявления (Ads)
     @GetMapping("")
     public ResponseWrapperAdsDto getALLAds() {
         return adsService.getAll();
@@ -70,8 +81,6 @@ public class AdsController {
 
         return adsService.getAds(id);
     }
-
-    // /ads/{id}
     @GetMapping("{id}")
     public FullAdsDto getAds(@PathVariable Long id) {
         return adsService.getFullAds(id);
@@ -88,7 +97,30 @@ public class AdsController {
     }
 
 
-    // {ad_pk}/comments/{id}
+    // Комментарии (Comments)
+
+    //ok
+    @PostMapping("{adPk}/comments")
+    public ResponseEntity<CommentDto> addComments(@PathVariable Long adPk,
+                                                  @RequestBody CommentDto commentDto) {
+
+        commentDto.setCreatedAt(LocalDateTime.now().toString());
+        Comment comment = CommentMapper.INSTANCE.commentDtoToEntity(commentDto);
+        commentRepository.save(comment);
+        if (commentDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(commentDto);
+    }
+
+    // ok
+    @GetMapping("{adPk}/comments")
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Long adPk) {
+
+        return ResponseEntity.ok(commentService.getAll());
+    }
+
+    // not sure what this endpoint does
     @GetMapping("{adPk}/comments/{id}")
     public ResponseEntity<CommentDto> getComments(@PathVariable Long adPk, @PathVariable Long id) {
         CommentDto commentDto = commentService.getComments(id);
