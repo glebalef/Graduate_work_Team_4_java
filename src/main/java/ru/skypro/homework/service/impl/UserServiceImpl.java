@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, String email) {
-        logger.debug("Was invoked method for editing user: {}", userDto);
+        logger.info("Was invoked method for editing user: {}", userDto);
 
         userDto.setEmail(email);
         UserInfo userFound = userRepository.findByEmail(email);
@@ -48,14 +48,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(String email) {
-        logger.debug("Was invoked method for getting user");
+        logger.info("Was invoked method for getting user");
         UserInfo userFound = userRepository.findByEmail(email);
         return UserMapper.INSTANCE.usertoUserDto(userFound);
     }
 
     @Override
     public void updateUserImage(MultipartFile avatarFile, Long id) throws IOException {
-        logger.debug("Was invoked method for editing user's image");
+        logger.info("Was invoked method for editing user's image");
         UserInfo userInfo = userRepository.findById(id).orElseThrow();
 
         Path filePath = Path.of(avatarsDir, userInfo + "." + getExtensions(avatarFile.getOriginalFilename()));
@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private String getExtensions(String fileName) {
+        logger.info("Invoke method getExtensions");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }

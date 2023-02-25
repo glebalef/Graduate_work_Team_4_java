@@ -1,5 +1,7 @@
 package ru.skypro.homework.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 @Transactional
 public class ImageServiceImpl implements ImageService {
+    Logger logger = LoggerFactory.getLogger(ImageServiceImpl.class);
     public ImageServiceImpl(AdsRepository adsRepository, ImageRepository imageRepository) {
         this.adsRepository = adsRepository;
         this.imageRepository = imageRepository;
@@ -34,6 +37,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void uploadImage(Long adsId, MultipartFile imageFile) throws IOException {
+        logger.info("Invoke method uploadImage");
         Ads ads = adsRepository.findById(adsId).orElse(null);
         Path filePath = Path.of(imagesDir, adsId + "." + getExtensions(imageFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
@@ -57,16 +61,18 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private String getExtensions(String fileName) {
+        logger.info("Invoke method getExtensions");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     public Image findImage(Long adsPk) {
+        logger.info("Invoke method findImage");
         return imageRepository.findImageByAds_pk(adsPk);
     }
 
 
     public List<String> findFilePathsByAdsPk(Long adsPk) {
-
+        logger.info("Invoke method findFilePathsByAdsPk");
         List<String> list = new ArrayList<>();
         for (Image value : imageRepository.findImagesByAds_Pk(adsPk)) {
             list.add(value.getFilePath());
@@ -75,6 +81,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     public void imageReWrite(Long id) {
+        logger.info("Invoke method imageReWrite");
         List<Image> images = new ArrayList<Image>();
         Ads reWrite = Objects.requireNonNull(adsRepository.findById(id).orElse(null));
         reWrite.setImage(images);
