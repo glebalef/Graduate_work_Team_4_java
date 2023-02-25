@@ -54,7 +54,6 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public FullAdsDto getFullAds(Long pk) {
-
         return fullAdsMapper.adsToFullAdsDto(Objects.requireNonNull(adsRepository.findById(pk).orElse(null)));
     }
 
@@ -135,12 +134,12 @@ public class AdsServiceImpl implements AdsService {
 
     public boolean accessAds(Authentication authentication, Long adsId) {
         UserInfo userInfo = userRepository.findByEmail(authentication.getName());
+        Ads ads = adsRepository.findById(adsId).orElseThrow();
+        Long userId = ads.getUserInfo().getId();
         boolean role = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-        if (userInfo.getId().equals(adsRepository.findUserInfoId(adsId)) || role) {
+        if (userInfo.getId().equals(userId) || role) {
             return true;
         }
         return false;
     }
-
-
 }

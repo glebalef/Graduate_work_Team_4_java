@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.ResponseWrapperComment;
+import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.mapper.CommentMapper;
@@ -42,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
         newComment.setText(commentDto.getText());
         newComment.setAds(adsRepository.findById(adPk).orElse(null));
         newComment.setUserInfo(userInfo);
-         newComment = commentRepository.save(newComment);
+        newComment = commentRepository.save(newComment);
         return commentMapper.commentToDto(newComment);
     }
 
@@ -56,8 +57,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateComments(Long author, Long id, CommentDto commentDto, Authentication authentication) {
         logger.debug("Invoke method updateComments");
         Optional<Comment> optional = commentRepository.findById(id);
-        if (optional.isPresent()) {
-            //accessComments(authentication, author, id);
+        if (optional.isPresent() && accessComments(authentication, author, id)) {
             Comment foundComment = optional.get();
             foundComment.setCreatedAt(LocalDate.now().toString());
             foundComment.setText(commentDto.getText());
@@ -69,9 +69,9 @@ public class CommentServiceImpl implements CommentService {
 
     public void deleteComments(Authentication authentication, Long adsId, Long commentId) {
         logger.debug("Invoke method deleteComments");
-        if(accessComments(authentication, adsId, commentId)){
-        commentRepository.deleteById(commentId);
-       }
+        if (accessComments(authentication, adsId, commentId)) {
+            commentRepository.deleteById(commentId);
+        }
     }
 
     @Override
@@ -89,9 +89,13 @@ public class CommentServiceImpl implements CommentService {
 
     public boolean accessComments(Authentication authentication, Long adsId, Long commentId) {
         UserInfo userInfo = userRepository.findByEmail(authentication.getName());
+        Ads ads = adsRepository.findById(adsId).orElseThrow();
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Long userIdComment = comment.getUserInfo().getId();
+        Long userIdAds = ads.getUserInfo().getId();
         boolean role = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-        if (userInfo.getId().equals(adsRepository.findUserInfoId(adsId))
-                || userInfo.getId().equals(commentRepository.findUserInfoId(commentId)) || role) {
+        if (userInfo.getId().equals(userIdComment)
+                || userInfo.getId().equals(userIdAds) || role) {
             return true;
         }
         return false;
