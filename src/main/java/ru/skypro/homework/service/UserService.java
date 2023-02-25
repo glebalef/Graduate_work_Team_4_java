@@ -1,13 +1,16 @@
 package ru.skypro.homework.service;
 
-import ru.skypro.homework.dto.NewPasswordDto;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.UserDto;
+
+import java.io.IOException;
 
 
 public interface UserService {
 
-    UserDto updateUser(UserDto userDto);
+    UserDto updateUser(UserDto userDto, String email);
 
     UserDto getUser(String email);
-    void updateUserImage(String image);
+
+    void updateUserImage(MultipartFile pic, Long id) throws IOException;
 }

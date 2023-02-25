@@ -14,6 +14,8 @@ import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
+import java.time.LocalDate;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -52,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         UserInfo userInfo = UserMapper.INSTANCE.registerReqToUser(registerReq);
+        userInfo.setRegDate(LocalDate.now().toString());
         userRepository.save(userInfo);
 
         return true;
@@ -62,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
         UserInfo userInfo = userRepository.findByEmail(email);
         String oldPassword = newPasswordDto.getCurrentPassword();
         String newPassword = newPasswordDto.getNewPassword();
-        if (oldPassword != null || encoder.matches(newPassword, userInfo.getPassword())) {
+        if (oldPassword.equals(userInfo.getPassword()) || encoder.matches(newPassword, userInfo.getPassword())) {
             manager.changePassword(oldPassword, "{bcrypt}" + encoder.encode(newPassword));
             userInfo.setPassword(newPassword);
             userRepository.save(userInfo);
