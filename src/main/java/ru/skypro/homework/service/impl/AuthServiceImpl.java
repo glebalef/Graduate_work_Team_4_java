@@ -1,5 +1,7 @@
 package ru.skypro.homework.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
     private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
@@ -31,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean login(String userName, String password) {
+        logger.info("Invoke method login");
         if (!manager.userExists(userName)) {
             return false;
         }
@@ -42,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean register(RegisterReq registerReq, Role role) {
+        logger.info("Invoke method register");
         if (manager.userExists(registerReq.getUsername())) {
             return false;
         }
@@ -62,6 +67,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean changePassword(NewPasswordDto newPasswordDto, String email) {
+        logger.info("Invoke method changePassword");
         UserInfo userInfo = userRepository.findByEmail(email);
         String oldPassword = newPasswordDto.getCurrentPassword();
         String newPassword = newPasswordDto.getNewPassword();

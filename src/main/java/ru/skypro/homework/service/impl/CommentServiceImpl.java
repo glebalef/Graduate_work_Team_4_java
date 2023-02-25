@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto addComments(CommentDto commentDto, Long adPk, Authentication authentication) {
-        logger.debug("Invoke method addComments");
+        logger.info("Invoke method addComments");
         Comment newComment = new Comment();
         UserInfo userInfo = userRepository.findByEmail(authentication.getName());
         newComment.setCreatedAt(LocalDateTime.now().toString());
@@ -49,13 +49,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto getComments(Long id) {
-        logger.debug("Invoke method getComments");
+        logger.info("Invoke method getComments");
         return commentMapper.commentToDto(commentRepository.findById(id).orElse(null));
     }
 
     @Override
     public CommentDto updateComments(Long author, Long id, CommentDto commentDto, Authentication authentication) {
-        logger.debug("Invoke method updateComments");
+        logger.info("Invoke method updateComments");
         Optional<Comment> optional = commentRepository.findById(id);
         if (optional.isPresent() && accessComments(authentication, author, id)) {
             Comment foundComment = optional.get();
@@ -68,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public void deleteComments(Authentication authentication, Long adsId, Long commentId) {
-        logger.debug("Invoke method deleteComments");
+        logger.info("Invoke method deleteComments");
         if (accessComments(authentication, adsId, commentId)) {
             commentRepository.deleteById(commentId);
         }
@@ -76,6 +76,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public ResponseWrapperComment getAll(Long adPk) {
+        logger.info("Invoke method getAllComments");
         List<CommentDto> list = new ArrayList<>();
         ResponseWrapperComment wrapper = new ResponseWrapperComment();
         for (Comment value : commentRepository.findCommentsByAds_Pk(adPk)) {
@@ -88,6 +89,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public boolean accessComments(Authentication authentication, Long adsId, Long commentId) {
+        logger.info("Invoke method accessComments");
         UserInfo userInfo = userRepository.findByEmail(authentication.getName());
         Ads ads = adsRepository.findById(adsId).orElseThrow();
         Comment comment = commentRepository.findById(commentId).orElseThrow();
