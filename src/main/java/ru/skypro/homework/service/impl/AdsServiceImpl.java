@@ -82,9 +82,16 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public ResponseWrapperAdsDto getAllAds(Authentication authentication) {
+
         UserInfo userInfo = userRepository.findByEmail(authentication.getName());
         ResponseWrapperAdsDto wrapper = new ResponseWrapperAdsDto();
         List<AdsDto> list = new ArrayList<>();
+        if (adsRepository.findAllByUserInfoId(userInfo.getId()).isEmpty()) {
+            List<AdsDto> list1 = new ArrayList<>();
+            wrapper.setResults(list1);
+            wrapper.setCount(0);
+            return wrapper;
+        }
         for (Ads value : adsRepository.findAllByUserInfoId(userInfo.getId())) {
             list.add(adsMapper.adsToAdsDto(value));
             wrapper.setResults(list);
@@ -98,6 +105,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseWrapperAdsDto getAll() {
         ResponseWrapperAdsDto wrapper = new ResponseWrapperAdsDto();
+
         List<AdsDto> list = new ArrayList<>();
         for (Ads value : adsRepository.findAll()) {
             list.add(adsMapper.adsToAdsDto(value));

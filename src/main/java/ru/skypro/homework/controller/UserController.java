@@ -83,7 +83,7 @@ public class UserController {
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
                     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
             })
-    public ResponseEntity<UserDto> getUser(Authentication authentication) {
+    public ResponseEntity<UserDto> getUser_1(Authentication authentication) {
         return ResponseEntity.ok(userService.getUser(authentication.getName()));
     }
 

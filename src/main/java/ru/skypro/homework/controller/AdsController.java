@@ -105,11 +105,9 @@ public class AdsController {
                                                   Authentication authentication) {
 
         commentDto.setCreatedAt(LocalDateTime.now().toString());
-        commentService.addComments(commentDto, adPk, authentication);
-        if (commentDto == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(commentDto);
+
+
+        return ResponseEntity.ok(commentService.addComments(commentDto, adPk, authentication));
     }
 
     // ok
@@ -191,4 +189,3 @@ public class AdsController {
         return adsService.searchAds(search);
     }
 }
-

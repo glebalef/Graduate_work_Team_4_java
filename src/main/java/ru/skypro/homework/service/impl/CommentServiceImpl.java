@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         newComment.setText(commentDto.getText());
         newComment.setAds(adsRepository.findById(adPk).orElse(null));
         newComment.setUserInfo(userInfo);
-        commentRepository.save(newComment);
+         newComment = commentRepository.save(newComment);
         return commentMapper.commentToDto(newComment);
     }
 
