@@ -1,15 +1,24 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/users")
@@ -20,32 +29,78 @@ public class UserController {
     private final AuthService authService;
 
 
-
     @PostMapping("/set_password")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(tags = {"Пользователи"},
+            summary = "setPassword",
+            operationId = "setPassword",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
+                            schema = @Schema(implementation = NewPasswordDto.class))
+                    }),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            })
     public ResponseEntity<NewPasswordDto> setPassword(@RequestBody NewPasswordDto newPasswordDto,
                                                       Authentication authentication) {
 
-        if(authService.changePassword(newPasswordDto, authentication.getName())) {
-        return ResponseEntity.ok().build();
-    }
-        else {
+        if (authService.changePassword(newPasswordDto, authentication.getName())) {
+            return ResponseEntity.ok().build();
+        } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-        return ResponseEntity.ok(userService.updateUser(userDto));
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(tags = {"Пользователи"},
+            summary = "updateUser",
+            operationId = "updateUser",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
+                            schema = @Schema(implementation = UserInfo.class))
+                    }),
+                    @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            })
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, Authentication authentication) {
+        return ResponseEntity.ok(userService.updateUser(userDto, authentication.getName()));
     }
 
     @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(tags = {"Пользователи"},
+            summary = "getUser",
+            operationId = "getUser_1",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
+                            schema = @Schema(implementation = UserInfo.class))
+                    }),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            })
     public ResponseEntity<UserDto> getUser(Authentication authentication) {
         return ResponseEntity.ok(userService.getUser(authentication.getName()));
     }
 
-    @PatchMapping("/me/image")
-    public ResponseEntity<?> updateUserImage(@RequestBody String image) {
+    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(tags = {"Пользователи"},
+            description = "updateUserImage",
+            summary = "updateUserImage",
+            operationId = "updateUserImage",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
+                            schema = @Schema(implementation = UserInfo.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            })
+    public ResponseEntity<String> updateUserImage(@RequestParam MultipartFile pic, Long id) throws IOException {
+        userService.updateUserImage(pic, id);
         return ResponseEntity.ok().build();
     }
 }

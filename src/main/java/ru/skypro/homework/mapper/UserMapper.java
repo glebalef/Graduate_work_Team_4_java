@@ -12,12 +12,9 @@ import ru.skypro.homework.entity.UserInfo;
 public interface UserMapper {
 
     UserDto usertoUserDto(UserInfo userInfo);
-
-    UserInfo userDtotoUser(UserDto userDto);
     @Mapping(source = "username", target = "email")
-    UserInfo registerReqToUser (RegisterReq registerReq);
+    UserInfo registerReqToUser(RegisterReq registerReq);
 
- 
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 

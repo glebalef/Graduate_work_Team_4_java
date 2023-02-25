@@ -42,7 +42,7 @@ public class ImageServiceImpl implements ImageService {
                 InputStream is = imageFile.getInputStream();
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
             bis.transferTo(bos);
         }
@@ -74,7 +74,7 @@ public class ImageServiceImpl implements ImageService {
         return list;
     }
 
-    public void imageReWrite (Long id) {
+    public void imageReWrite(Long id) {
         List<Image> images = new ArrayList<Image>();
         Ads reWrite = Objects.requireNonNull(adsRepository.findById(id).orElse(null));
         reWrite.setImage(images);

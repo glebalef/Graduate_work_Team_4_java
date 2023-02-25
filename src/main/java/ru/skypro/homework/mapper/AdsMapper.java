@@ -1,6 +1,7 @@
 package ru.skypro.homework.mapper;
 
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.entity.Ads;
@@ -11,13 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Mapper(componentModel = "spring")
 public interface AdsMapper {
 
     AdsMapper INSTANCE = Mappers.getMapper(AdsMapper.class);
 
     @Mapping(source = "image", target = "image", qualifiedBy = ImageToPathMapper.class)
+    @Mapping(source = "userInfo.id", target = "author")
     AdsDto adsToAdsDto(Ads ads);
 
     @ImageToPathMapper

@@ -10,6 +10,8 @@ import java.util.Optional;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
     Optional<Image> findByAdsPk(Long adsPk);
+
     List<Image> findImagesByAds_Pk(Long ads_pk);
-    Image findImageByAds_pk (Long ads_pk);
+
+    Image findImageByAds_pk(Long ads_pk);
 }
