@@ -14,4 +14,5 @@ public interface CommentService {
     void deleteComments(Authentication authentication, Long adsId, Long commentId);
 
     ResponseWrapperComment getAll(Long adPk);
+    boolean accessComments(Authentication authentication, Long commentId);
 }

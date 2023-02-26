@@ -7,7 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.ResponseWrapperComment;
-import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.mapper.CommentMapper;
@@ -57,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateComments(Long author, Long id, CommentDto commentDto, Authentication authentication) {
         logger.info("Invoke method updateComments");
         Optional<Comment> optional = commentRepository.findById(id);
-        if (optional.isPresent() && accessComments(authentication, author, id)) {
+        if (optional.isPresent() && accessComments(authentication, id)) {
             Comment foundComment = optional.get();
             foundComment.setCreatedAt(LocalDate.now().toString());
             foundComment.setText(commentDto.getText());
@@ -67,9 +66,9 @@ public class CommentServiceImpl implements CommentService {
         return null;
     }
 
-    public void deleteComments(Authentication authentication, Long adsId, Long commentId) {
+    public void deleteComments(Authentication authentication, Long asId, Long commentId) {
         logger.info("Invoke method deleteComments");
-        if (accessComments(authentication, adsId, commentId)) {
+        if (accessComments(authentication, commentId)) {
             commentRepository.deleteById(commentId);
         }
     }
@@ -88,18 +87,12 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-    public boolean accessComments(Authentication authentication, Long adsId, Long commentId) {
+    public boolean accessComments(Authentication authentication, Long commentId) {
         logger.info("Invoke method accessComments");
         UserInfo userInfo = userRepository.findByEmail(authentication.getName());
-        Ads ads = adsRepository.findById(adsId).orElseThrow();
         Comment comment = commentRepository.findById(commentId).orElseThrow();
         Long userIdComment = comment.getUserInfo().getId();
-        Long userIdAds = ads.getUserInfo().getId();
         boolean role = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-        if (userInfo.getId().equals(userIdComment)
-                || userInfo.getId().equals(userIdAds) || role) {
-            return true;
-        }
-        return false;
+        return userInfo.getId().equals(userIdComment) || role;
     }
 }
