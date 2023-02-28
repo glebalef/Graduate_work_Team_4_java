@@ -166,6 +166,9 @@ public class AdsController {
         return ResponseEntity.ok().build();
     }
 
+
+
+
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void updateAdsImage(@PathVariable Long id, HttpServletResponse response) throws IOException {

@@ -32,14 +32,14 @@ public class ImageServiceImpl implements ImageService {
 
     private final AdsRepository adsRepository;
     private final ImageRepository imageRepository;
-    @Value("${path.to.images.folder}")
-    private String imagesDir;
+   // @Value("${path.to.images.folder}")
+    private String imagesDir = "C:\\Users\\gleba\\Documents\\Graduate java project\\Images";
 
     @Override
     public void uploadImage(Long adsId, MultipartFile imageFile) throws IOException {
         logger.info("Invoke method uploadImage");
         Ads ads = adsRepository.findById(adsId).orElse(null);
-        Path filePath = Path.of(imagesDir, adsId + "." + getExtensions(imageFile.getOriginalFilename()));
+        Path filePath = Path.of(imagesDir, adsId + "." + getExtensions(Objects.requireNonNull(imageFile.getOriginalFilename())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (
@@ -52,7 +52,7 @@ public class ImageServiceImpl implements ImageService {
         }
         Image image = imageRepository.findById(adsId).orElseGet(Image::new);
         image.setAds(ads);
-        image.setFilePath(filePath.toString());
+        image.setFilePath("/image/"+adsId+"/");
         image.setFileSize(imageFile.getSize());
         image.setMediaType(imageFile.getContentType());
         image.setData(imageFile.getBytes());

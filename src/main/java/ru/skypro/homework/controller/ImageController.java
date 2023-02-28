@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 
@@ -30,5 +31,11 @@ public class ImageController {
         imageService.uploadImage(id, pic);
 
         return pic.getName();
+    }
+
+    @GetMapping(value = "/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
+    public byte[] getImage(@PathVariable Long id) {
+        Ads ads = adsService.getAdsNotDtoById(id);
+        return ads.getImage().get(0).getData();
     }
 }
