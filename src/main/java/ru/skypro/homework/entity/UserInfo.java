@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -31,6 +32,7 @@ public class UserInfo {
     private String city;
     @Column(name = "password")
     private String password;
+    String image;
 }
 
 

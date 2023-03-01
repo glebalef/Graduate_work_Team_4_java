@@ -26,7 +26,6 @@ public class ImageController {
     }
 
     @PatchMapping (value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void editPhotoAdd(
             @RequestParam MultipartFile image,
             @PathVariable Long id) throws IOException {

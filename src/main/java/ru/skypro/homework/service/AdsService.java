@@ -27,7 +27,5 @@ public interface AdsService {
     ResponseWrapperAdsDto searchAds(String part);
 
     void justSaveAds(Ads ads);
-    boolean accessAds(Authentication authentication, Long adsId);
 
-    public Ads findAdsByImageId(Long id);
 }

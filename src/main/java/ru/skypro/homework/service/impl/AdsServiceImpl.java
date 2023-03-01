@@ -18,6 +18,7 @@ import ru.skypro.homework.mapper.FullAdsMapper;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.SecurityService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class AdsServiceImpl implements AdsService {
     private final AdsMapper adsMapper;
     private final FullAdsMapper fullAdsMapper;
     private final UserRepository userRepository;
+    private final SecurityService securityService;
 
 
     @Override
@@ -68,7 +70,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public void removeFullAds(Long pk, Authentication authentication) {
         logger.info("Invoke method removeFullAds");
-        if (accessAds(authentication, pk))
+        if (securityService.accessAds(authentication, pk))
             adsRepository.deleteById(pk);
     }
 
@@ -76,7 +78,7 @@ public class AdsServiceImpl implements AdsService {
     public AdsDto updateAds(Long pk, CreateAdsDto createAdsDto, Authentication authentication) {
         logger.info("Invoke method updateAds");
         Ads ads = adsRepository.findById(pk).orElse(null);
-        if (accessAds(authentication, pk)) {
+        if (securityService.accessAds(authentication, pk)) {
             assert ads != null;
             ads.setPrice(createAdsDto.getPrice());
             ads.setDescription(createAdsDto.getDescription());
@@ -104,15 +106,11 @@ public class AdsServiceImpl implements AdsService {
             wrapper.setCount(list.size());
         }
         return wrapper;
-
     }
-
-
     @Override
     public ResponseWrapperAdsDto getAll() {
         logger.info("Invoke method getAllAds");
         ResponseWrapperAdsDto wrapper = new ResponseWrapperAdsDto();
-
         List<AdsDto> list = new ArrayList<>();
         for (Ads value : adsRepository.findAll()) {
             list.add(adsMapper.adsToAdsDto(value));
@@ -120,15 +118,12 @@ public class AdsServiceImpl implements AdsService {
         wrapper.setResults(list);
         wrapper.setCount(list.size());
         return wrapper;
-
     }
-
     @Override
     public Ads getAdsNotDtoById(Long id) {
         logger.info("Invoke method getAdsNotDtoById");
         return adsRepository.findById(id).orElse(null);
     }
-
     @Override
     public ResponseWrapperAdsDto searchAds(String part) {
         logger.info("Invoke method searchAds");
@@ -140,21 +135,5 @@ public class AdsServiceImpl implements AdsService {
         wrapper.setResults(list);
         wrapper.setCount(list.size());
         return wrapper;
-    }
-
-    public boolean accessAds(Authentication authentication, Long adsId) {
-        logger.info("Invoke method accessAds");
-        UserInfo userInfo = userRepository.findByEmail(authentication.getName());
-        Ads ads = adsRepository.findById(adsId).orElseThrow();
-        Long userId = ads.getUserInfo().getId();
-        boolean role = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-        if (userInfo.getId().equals(userId) || role) {
-            return true;
-        }
-        return false;
-    }
-
-    public Ads findAdsByImageId(Long id) {
-       return adsRepository.findAdsByImageId(id);
     }
 }
