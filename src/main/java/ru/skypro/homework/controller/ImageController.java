@@ -4,7 +4,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.entity.Ads;
+import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 
@@ -23,14 +25,13 @@ public class ImageController {
         this.adsService = adsService;
     }
 
-    @PatchMapping(value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping (value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public String updateImage(
-            @RequestParam MultipartFile pic,
+    public void editPhotoAdd(
+            @RequestParam MultipartFile image,
             @PathVariable Long id) throws IOException {
-        imageService.updateImage(id, pic);
-
-        return pic.getName();
+        imageService.updateImage(id, image);
+        Ads ads = adsService.getAdsNotDtoById(id);
     }
 
     @GetMapping(value = "/image/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
