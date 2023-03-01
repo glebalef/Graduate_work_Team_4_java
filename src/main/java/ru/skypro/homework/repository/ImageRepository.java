@@ -14,4 +14,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findImagesByAds_Pk(Long ads_pk);
 
     Image findImageByAds_pk(Long ads_pk);
+
+    Void deleteImageByAds_pk(Long pk);
 }

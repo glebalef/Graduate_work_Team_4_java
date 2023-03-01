@@ -10,7 +10,7 @@ import ru.skypro.homework.service.ImageService;
 
 import java.io.IOException;
 
-@RequestMapping("/image")
+
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 public class ImageController {
@@ -23,17 +23,17 @@ public class ImageController {
         this.adsService = adsService;
     }
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public String updateImage(
             @RequestParam MultipartFile pic,
             @PathVariable Long id) throws IOException {
-        imageService.uploadImage(id, pic);
+        imageService.updateImage(id, pic);
 
         return pic.getName();
     }
 
-    @GetMapping(value = "/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
+    @GetMapping(value = "/image/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
     public byte[] getImage(@PathVariable Long id) {
         Ads ads = adsService.getAdsNotDtoById(id);
         return ads.getImage().get(0).getData();

@@ -14,4 +14,6 @@ public interface AdsRepository extends JpaRepository<Ads, Long> {
     @NotNull List<Ads> findAll();
     List<Ads> findAdsByTitleOrDescriptionContainingIgnoreCase(String part1, String part2);
 
+    Ads findAdsByImageId(Long id);
+
 }

@@ -153,4 +153,8 @@ public class AdsServiceImpl implements AdsService {
         }
         return false;
     }
+
+    public Ads findAdsByImageId(Long id) {
+       return adsRepository.findAdsByImageId(id);
+    }
 }

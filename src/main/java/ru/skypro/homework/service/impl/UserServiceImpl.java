@@ -70,14 +70,14 @@ public class UserServiceImpl implements UserService {
         Avatar avatar = avatarRepository.findAvatarByUserInfoId(id);
         if (avatar == null) {
             avatar = new Avatar();
-            avatar.setFilePath(filePath.toString());
+            avatar.setFilePath("/users/me/image/"+id+"/");
             avatar.setFileSize(avatarFile.getSize());
             avatar.setMediaType(avatarFile.getContentType());
             avatar.setData(avatarFile.getBytes());
             avatar.setUserInfo(userInfo);
             avatarRepository.save(avatar);
         } else {
-            avatar.setFilePath(filePath.toString());
+            avatar.setFilePath("/users/me/image/"+id+"/");
             avatar.setFileSize(avatarFile.getSize());
             avatar.setMediaType(avatarFile.getContentType());
             avatar.setData(avatarFile.getBytes());

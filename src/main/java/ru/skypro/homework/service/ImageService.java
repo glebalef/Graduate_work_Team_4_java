@@ -8,6 +8,7 @@ import java.io.IOException;
 public interface ImageService {
 
     void uploadImage(Long adsId, MultipartFile avatarFile) throws IOException;
+    public void updateImage (Long adsId, MultipartFile imageFile) throws IOException;
 
     Image findImage(Long adsPk);
 
