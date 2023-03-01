@@ -87,4 +87,16 @@ public class ImageServiceImpl implements ImageService {
         reWrite.setImage(images);
         adsRepository.save(reWrite);
     }
+
+
+    @Override
+    public void updateImage (Long adsId, MultipartFile imageFile) throws IOException {
+        logger.info("Invoke method updateImage");
+        Image image = imageRepository.findImageByAds_pk(adsId);
+        assert image != null;
+        image.setFileSize(imageFile.getSize());
+        image.setMediaType(imageFile.getContentType());
+        image.setData(imageFile.getBytes());
+        imageRepository.save(image);
+    }
 }
