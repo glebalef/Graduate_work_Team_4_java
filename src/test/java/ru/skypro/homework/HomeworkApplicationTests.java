@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Image;
-import ru.skypro.homework.entity.User;
+import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.mapper.AdsMapper;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 @SpringBootTest
 class HomeworkApplicationTests {
 
-    User TEST_USER = new User(
+    UserInfo TEST_USER = new UserInfo(
             "abc@abc.com",
             "Ivan",
             1L,
@@ -23,14 +23,15 @@ class HomeworkApplicationTests {
             "495-11-22",
             "01-01-2000",
             "Moscow",
-            "Password");
+            "Password"
+    , null);
 
     Ads TEST_ADS = new Ads(
             1L,
             "ПРОДАМ ГАРАЖ",
             "ГАРАЖ",
             TEST_USER,
-            null,
+            null, null,
             100L );
 
     Image TEST_IMAGE = new Image(

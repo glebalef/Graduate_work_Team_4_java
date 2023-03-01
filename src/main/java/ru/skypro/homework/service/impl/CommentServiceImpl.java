@@ -14,6 +14,7 @@ import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
+import ru.skypro.homework.service.SecurityService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
+    private final SecurityService securityService;
 
 
     @Override
@@ -56,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateComments(Long author, Long id, CommentDto commentDto, Authentication authentication) {
         logger.info("Invoke method updateComments");
         Optional<Comment> optional = commentRepository.findById(id);
-        if (optional.isPresent() && accessComments(authentication, id)) {
+        if (optional.isPresent() && securityService.accessComments(authentication, id)) {
             Comment foundComment = optional.get();
             foundComment.setCreatedAt(LocalDate.now().toString());
             foundComment.setText(commentDto.getText());
@@ -68,7 +70,7 @@ public class CommentServiceImpl implements CommentService {
 
     public void deleteComments(Authentication authentication, Long asId, Long commentId) {
         logger.info("Invoke method deleteComments");
-        if (accessComments(authentication, commentId)) {
+        if (securityService.accessComments(authentication, commentId)) {
             commentRepository.deleteById(commentId);
         }
     }
@@ -85,14 +87,5 @@ public class CommentServiceImpl implements CommentService {
         wrapper.setCount(list.size());
         return wrapper;
 
-    }
-
-    public boolean accessComments(Authentication authentication, Long commentId) {
-        logger.info("Invoke method accessComments");
-        UserInfo userInfo = userRepository.findByEmail(authentication.getName());
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-        Long userIdComment = comment.getUserInfo().getId();
-        boolean role = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-        return userInfo.getId().equals(userIdComment) || role;
     }
 }

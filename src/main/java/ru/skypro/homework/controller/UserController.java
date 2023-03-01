@@ -8,13 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.Ads;
+import ru.skypro.homework.entity.Avatar;
 import ru.skypro.homework.entity.UserInfo;
+import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
@@ -28,11 +30,12 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
     private final AuthService authService;
-    private final UserRepository userRepository;
+    private final AvatarRepository avatarRepository;
+
+
 
 
     @PostMapping("/set_password")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(tags = {"Пользователи"},
             summary = "setPassword",
             operationId = "setPassword",
@@ -55,7 +58,6 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(tags = {"Пользователи"},
             summary = "updateUser",
             operationId = "updateUser",
@@ -73,7 +75,6 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(tags = {"Пользователи"},
             summary = "getUser",
             operationId = "getUser_1",
@@ -90,7 +91,6 @@ public class UserController {
     }
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(tags = {"Пользователи"},
             description = "updateUserImage",
             summary = "updateUserImage",
@@ -101,8 +101,8 @@ public class UserController {
                     }),
                     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
             })
-    public ResponseEntity<String> updateUserImage(@RequestParam MultipartFile pic, Long id) throws IOException {
-        userService.updateUserImage(pic, id);
+    public ResponseEntity<String> updateUserImage(@RequestParam MultipartFile image, Authentication authentication) throws IOException {
+        userService.updateUserImage(image, authentication.getName());
         return ResponseEntity.ok().build();
     }
 
@@ -112,4 +112,7 @@ public class UserController {
 //     UserDto user = userService.ge;
 //        return user.getImage();
 //    }
-}
+    @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE})
+    public byte[] getImage(@PathVariable("id") Long id) throws IOException {
+        return userService.getImage(id);
+}}

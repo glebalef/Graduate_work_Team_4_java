@@ -2,7 +2,6 @@ package ru.skypro.homework.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +53,7 @@ public class AdsController {
     @PostMapping(value = "",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
     )
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+
     public AdsDto addAds(@RequestPart(required = true) CreateAdsDto properties,
                          @RequestPart(required = false) MultipartFile image,
                          Authentication authentication)
@@ -77,20 +76,17 @@ public class AdsController {
 
     // /ads/{id}
     @GetMapping("{id}")
-
     public FullAdsDto getAds(@PathVariable Long id, Authentication authentication) {
         return adsService.getFullAds(id);
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<AdsDto> removeAds(@PathVariable Long id, Authentication authentication) {
         adsService.removeFullAds(id, authentication);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public AdsDto updateAds(@PathVariable Long id, @RequestBody CreateAdsDto ads, Authentication authentication) {
         return adsService.updateAds(id, ads, authentication);
     }
@@ -99,7 +95,6 @@ public class AdsController {
 
     //ok
     @PostMapping("{adPk}/comments")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<CommentDto> addComments(@PathVariable Long adPk,
                                                   @RequestBody CommentDto commentDto,
                                                   Authentication authentication) {
@@ -112,7 +107,6 @@ public class AdsController {
 
     // ok
     @GetMapping("{adPk}/comments")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Long adPk) {
 
         return ResponseEntity.ok(commentService.getAll(adPk));
@@ -121,7 +115,6 @@ public class AdsController {
 
     // {ad_pk}/comments/{id}
     @GetMapping("{adPk}/comments/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<CommentDto> getComments(@PathVariable Long adPk, @PathVariable Long id) {
         CommentDto commentDto = commentService.getComments(id);
         if (commentDto == null) {
@@ -131,7 +124,6 @@ public class AdsController {
     }
 
     @DeleteMapping("{ad_Pk}/comments/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Void> deleteComments(@PathVariable Long ad_Pk,
                                                @PathVariable Long id,
                                                Authentication authentication) {
@@ -140,7 +132,6 @@ public class AdsController {
     }
 
     @PatchMapping("{ad_Pk}/comments/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<CommentDto> updateComments(@PathVariable Long ad_Pk,
                                                      @PathVariable Long id,
                                                      @RequestBody CommentDto comment,
@@ -153,14 +144,12 @@ public class AdsController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ResponseWrapperAdsDto> getAdsMe(Authentication authentication) {
         adsService.getAllAds(authentication);
         return ResponseEntity.ok(adsService.getAllAds(authentication));
     }
 
     @PostMapping(value = "{adsPk}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<String> uploadImage(@PathVariable Long adsPk, @RequestParam MultipartFile image) throws IOException {
         imageService.uploadImage(adsPk, image);
         return ResponseEntity.ok().build();
@@ -170,7 +159,6 @@ public class AdsController {
 
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void updateAdsImage(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Image image = imageService.findImage(id);
 

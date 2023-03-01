@@ -12,5 +12,7 @@ public interface UserService {
 
     UserDto getUser(String email);
 
-    void updateUserImage(MultipartFile pic, Long id) throws IOException;
+    void updateUserImage(MultipartFile pic, String email) throws IOException;
+    byte[] getImage(Long id) throws IOException;
+
 }

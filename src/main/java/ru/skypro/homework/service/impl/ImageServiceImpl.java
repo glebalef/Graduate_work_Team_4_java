@@ -1,8 +1,10 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +13,7 @@ import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.service.ImageService;
+import ru.skypro.homework.service.SecurityService;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -23,17 +26,17 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     Logger logger = LoggerFactory.getLogger(ImageServiceImpl.class);
-    public ImageServiceImpl(AdsRepository adsRepository, ImageRepository imageRepository) {
-        this.adsRepository = adsRepository;
-        this.imageRepository = imageRepository;
-    }
+
 
     private final AdsRepository adsRepository;
     private final ImageRepository imageRepository;
-   // @Value("${path.to.images.folder}")
-    private String imagesDir = "C:\\Users\\gleba\\Documents\\Graduate java project\\Images";
+    private final SecurityService securityService;
+
+    @Value("${path.to.images.folder}")
+    private String imagesDir;
 
     @Override
     public void uploadImage(Long adsId, MultipartFile imageFile) throws IOException {
@@ -50,6 +53,7 @@ public class ImageServiceImpl implements ImageService {
         ) {
             bis.transferTo(bos);
         }
+
         Image image = imageRepository.findById(adsId).orElseGet(Image::new);
         image.setAds(ads);
         image.setFilePath("/image/"+adsId+"/");
