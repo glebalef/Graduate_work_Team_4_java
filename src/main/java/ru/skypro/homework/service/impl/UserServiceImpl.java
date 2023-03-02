@@ -13,19 +13,11 @@ import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Objects;
-
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-
 public class UserServiceImpl implements UserService {
-
-    private String avatarsDir;
     private final UserRepository userRepository;
     private final AvatarRepository avatarRepository;
     private final UserMapper userMapper;
@@ -59,36 +51,17 @@ public class UserServiceImpl implements UserService {
     public void updateUserImage(MultipartFile avatarFile, String email) throws IOException {
         logger.info("Was invoked method for editing user's image");
         UserInfo userInfo = userRepository.findByEmail(email);
-
-        Path filePath = Path.of(avatarsDir, email + "." + getExtensions(Objects.requireNonNull(avatarFile.getOriginalFilename())));
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-
-        try (InputStream is = avatarFile.getInputStream();
-             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-             BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             BufferedOutputStream bos = new BufferedOutputStream(os, 1024)) {
-            bis.transferTo(bos);
-        }
         Avatar avatar = avatarRepository.findAvatarByUserInfoId(userInfo.getId());
+
         if (avatar == null) {
             avatar = new Avatar();
-            avatar.setFilePath("/users/" + userInfo.getId() + "/image");
-            avatar.setFileSize(avatarFile.getSize());
-            avatar.setMediaType(avatarFile.getContentType());
-            avatar.setData(avatarFile.getBytes());
-            avatar.setUserInfo(userInfo);
-
-            avatarRepository.save(avatar);
-        } else {
-            avatar.setFilePath("/users/" + userInfo.getId() + "/image");
-            avatar.setFileSize(avatarFile.getSize());
-            avatar.setMediaType(avatarFile.getContentType());
-            avatar.setData(avatarFile.getBytes());
-            avatar.setUserInfo(userInfo);
-
-            avatarRepository.save(avatar);
         }
+        avatar.setFilePath("/users/" + userInfo.getId() + "/image");
+        avatar.setFileSize(avatarFile.getSize());
+        avatar.setMediaType(avatarFile.getContentType());
+        avatar.setData(avatarFile.getBytes());
+        avatar.setUserInfo(userInfo);
+        avatarRepository.save(avatar);
         userInfo.setImage(avatar.getFilePath());
         userRepository.save(userInfo);
     }
@@ -98,9 +71,5 @@ public class UserServiceImpl implements UserService {
         logger.info("Was invoked method for getting avatar");
         Avatar avatar = avatarRepository.findAvatarByUserInfoId(id);
         return avatar.getData();
-    }
-    private String getExtensions(String fileName) {
-        logger.info("Invoke method getExtensions");
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }

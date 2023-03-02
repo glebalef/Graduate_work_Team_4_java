@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -8,8 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Image;
-import ru.skypro.homework.repository.AdsRepository;
-import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.ImageService;
@@ -27,21 +26,13 @@ import java.util.Objects;
 
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
+@RequiredArgsConstructor
 @RestController
 public class AdsController {
 
     private final CommentService commentService;
     private final AdsService adsService;
     private final ImageService imageService;
-    private final CommentRepository commentRepository;
-
-    AdsController(CommentService commentService, AdsService adsService, ImageService imageService,
-                  AdsRepository adsRepository1, CommentRepository commentRepository) {
-        this.commentService = commentService;
-        this.adsService = adsService;
-        this.imageService = imageService;
-        this.commentRepository = commentRepository;
-    }
 
     // /ads
     @GetMapping("")
@@ -54,7 +45,7 @@ public class AdsController {
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
     )
 
-    public AdsDto addAds(@RequestPart(required = true) CreateAdsDto properties,
+    public AdsDto addAds(@RequestPart CreateAdsDto properties,
                          @RequestPart(required = false) MultipartFile image,
                          Authentication authentication)
             throws IOException {
@@ -76,7 +67,7 @@ public class AdsController {
 
     // /ads/{id}
     @GetMapping("{id}")
-    public FullAdsDto getAds(@PathVariable Long id, Authentication authentication) {
+    public FullAdsDto getAds(@PathVariable Long id) {
         return adsService.getFullAds(id);
     }
 

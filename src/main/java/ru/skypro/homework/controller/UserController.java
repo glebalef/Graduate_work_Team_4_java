@@ -98,6 +98,7 @@ public class UserController {
         userService.updateUserImage(image, authentication.getName());
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE})
     public byte[] getImage(@PathVariable("id") Long id) throws IOException {
         return userService.getImage(id);
