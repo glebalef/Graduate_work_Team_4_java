@@ -60,16 +60,16 @@ public class UserServiceImpl implements UserService {
         logger.info("Was invoked method for editing user's image");
         UserInfo userInfo = userRepository.findByEmail(email);
 
-        Path filePath = Path.of(avatarsDir, email + "." + getExtensions(Objects.requireNonNull(avatarFile.getOriginalFilename())));
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
+//        Path filePath = Path.of(avatarsDir, email + "." + getExtensions(Objects.requireNonNull(avatarFile.getOriginalFilename())));
+//        Files.createDirectories(filePath.getParent());
+//        Files.deleteIfExists(filePath);
 
-        try (InputStream is = avatarFile.getInputStream();
-             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-             BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             BufferedOutputStream bos = new BufferedOutputStream(os, 1024)) {
-            bis.transferTo(bos);
-        }
+//        try (InputStream is = avatarFile.getInputStream();
+//             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+//             BufferedInputStream bis = new BufferedInputStream(is, 1024);
+//             BufferedOutputStream bos = new BufferedOutputStream(os, 1024)) {
+//            bis.transferTo(bos);
+//        }
         Avatar avatar = avatarRepository.findAvatarByUserInfoId(userInfo.getId());
         if (avatar == null) {
             avatar = new Avatar();
