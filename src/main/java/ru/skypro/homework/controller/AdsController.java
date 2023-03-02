@@ -65,7 +65,7 @@ public class AdsController {
         imageService.uploadImage(id, image);
 
         // добавили картинку к Ads
-        List<Image> images = new ArrayList<Image>();
+        List<Image> images = new ArrayList<>();
         images.add(imageService.findImage(id));
         Ads reWrite = Objects.requireNonNull(adsService.getAdsNotDtoById(id));
         reWrite.setImage(images);
