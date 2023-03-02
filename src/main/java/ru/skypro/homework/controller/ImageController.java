@@ -1,12 +1,9 @@
 package ru.skypro.homework.controller;
 
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.entity.Ads;
-import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 
@@ -25,7 +22,7 @@ public class ImageController {
         this.adsService = adsService;
     }
 
-    @PatchMapping (value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void editPhotoAdd(
             @RequestParam MultipartFile image,
             @PathVariable Long id) throws IOException {

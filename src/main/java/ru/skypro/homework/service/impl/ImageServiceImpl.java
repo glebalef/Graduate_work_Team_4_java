@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +32,6 @@ public class ImageServiceImpl implements ImageService {
 
     private final AdsRepository adsRepository;
     private final ImageRepository imageRepository;
-    private final SecurityService securityService;
 
     @Value("${path.to.images.folder}")
     private String imagesDir;
@@ -56,7 +54,7 @@ public class ImageServiceImpl implements ImageService {
 
         Image image = imageRepository.findById(adsId).orElseGet(Image::new);
         image.setAds(ads);
-        image.setFilePath("/image/"+adsId+"/");
+        image.setFilePath("/image/" + adsId + "/");
         image.setFileSize(imageFile.getSize());
         image.setMediaType(imageFile.getContentType());
         image.setData(imageFile.getBytes());
@@ -94,7 +92,7 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public void updateImage (Long adsId, MultipartFile imageFile) throws IOException {
+    public void updateImage(Long adsId, MultipartFile imageFile) throws IOException {
         logger.info("Invoke method updateImage");
         Image image = imageRepository.findImageByAds_pk(adsId);
         assert image != null;
