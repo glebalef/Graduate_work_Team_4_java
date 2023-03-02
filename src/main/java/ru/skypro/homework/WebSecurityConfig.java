@@ -35,7 +35,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authz) ->
                         authz
                                 .mvcMatchers(AUTH_WHITELIST).permitAll()
-                                .antMatchers(HttpMethod.GET, "/ads", "/ads/*/image", "/image/**").permitAll()
+                                .antMatchers(HttpMethod.GET, "/ads", "/ads/*/image", "/image/**", "/users/*/image").permitAll()
                                 .antMatchers("/ads/**", "/users/**").authenticated()
 
                 )

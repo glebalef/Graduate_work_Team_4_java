@@ -156,8 +156,6 @@ public class AdsController {
     }
 
 
-
-
     @PostMapping
     public void updateAdsImage(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Image image = imageService.findImage(id);

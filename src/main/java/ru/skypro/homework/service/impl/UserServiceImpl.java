@@ -3,13 +3,10 @@ package ru.skypro.homework.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.Avatar;
-import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.AvatarRepository;
@@ -19,9 +16,7 @@ import ru.skypro.homework.service.UserService;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.UUID;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -29,10 +24,11 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @RequiredArgsConstructor
 
 public class UserServiceImpl implements UserService {
-    @Value("${path.to.avatars.folder}")
+
     private String avatarsDir;
     private final UserRepository userRepository;
     private final AvatarRepository avatarRepository;
+    private final UserMapper userMapper;
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -53,10 +49,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(String email)  {
+    public UserDto getUser(String email) {
         logger.info("Was invoked method for getting user");
         UserInfo userFound = userRepository.findByEmail(email);
-        return UserMapper.INSTANCE.usertoUserDto(userFound);
+        return userMapper.usertoUserDto(userFound);
     }
 
     @Override
@@ -77,32 +73,32 @@ public class UserServiceImpl implements UserService {
         Avatar avatar = avatarRepository.findAvatarByUserInfoId(userInfo.getId());
         if (avatar == null) {
             avatar = new Avatar();
-            avatar.setFilePath("/users/me/"+userInfo.getId()+"/image");
+            avatar.setFilePath("/users/" + userInfo.getId() + "/image");
             avatar.setFileSize(avatarFile.getSize());
             avatar.setMediaType(avatarFile.getContentType());
             avatar.setData(avatarFile.getBytes());
             avatar.setUserInfo(userInfo);
-            userInfo.setImage(avatar.getFilePath());
-            userRepository.save(userInfo);
+
             avatarRepository.save(avatar);
         } else {
-            avatar.setFilePath("/users/me/"+userInfo.getId()+"/image");
+            avatar.setFilePath("/users/" + userInfo.getId() + "/image");
             avatar.setFileSize(avatarFile.getSize());
             avatar.setMediaType(avatarFile.getContentType());
             avatar.setData(avatarFile.getBytes());
             avatar.setUserInfo(userInfo);
-            userInfo.setImage(avatar.getFilePath());
-            userRepository.save(userInfo);
+
             avatarRepository.save(avatar);
         }
+        userInfo.setImage(avatar.getFilePath());
+        userRepository.save(userInfo);
     }
 
     @Override
-    public byte[] getImage(Long id) throws IOException {
-        UserInfo userInfo = userRepository.findById(id).orElseThrow();
-return userInfo.getImage().getBytes();
+    public byte[] getImage(Long id) {
+        logger.info("Was invoked method for getting avatar");
+        Avatar avatar = avatarRepository.findAvatarByUserInfoId(id);
+        return avatar.getData();
     }
-
     private String getExtensions(String fileName) {
         logger.info("Invoke method getExtensions");
         return fileName.substring(fileName.lastIndexOf(".") + 1);

@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
-import ru.skypro.homework.entity.Ads;
-import ru.skypro.homework.entity.Avatar;
 import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.repository.AvatarRepository;
-import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
@@ -30,8 +27,6 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
     private final AuthService authService;
-    private final AvatarRepository avatarRepository;
-
 
 
 
@@ -107,7 +102,7 @@ public class UserController {
     }
 
 
-//    @GetMapping(value = "/me/image/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
+    //    @GetMapping(value = "/me/image/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
 //    public byte[] getAvatrar(@PathVariable Long id) {
 //     UserDto user = userService.ge;
 //        return user.getImage();
@@ -115,4 +110,5 @@ public class UserController {
     @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE})
     public byte[] getImage(@PathVariable("id") Long id) throws IOException {
         return userService.getImage(id);
-}}
+    }
+}
