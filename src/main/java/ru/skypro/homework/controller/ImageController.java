@@ -1,6 +1,8 @@
 package ru.skypro.homework.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.Ads;
@@ -11,22 +13,18 @@ import java.io.IOException;
 
 
 @CrossOrigin(value = "http://localhost:3000")
+@RequiredArgsConstructor
 @RestController
 public class ImageController {
 
     private final ImageService imageService;
     private final AdsService adsService;
 
-    public ImageController(ImageService imageService, AdsService adsService) {
-        this.imageService = imageService;
-        this.adsService = adsService;
-    }
-
     @PatchMapping(value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void editPhotoAdd(
             @RequestParam MultipartFile image,
-            @PathVariable Long id) throws IOException {
-        imageService.updateImage(id, image);
+            @PathVariable Long id, Authentication authentication) throws IOException {
+        imageService.updateImage(id, image, authentication);
         Ads ads = adsService.getAdsNotDtoById(id);
     }
 

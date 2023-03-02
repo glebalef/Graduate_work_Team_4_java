@@ -107,6 +107,7 @@ public class AdsServiceImpl implements AdsService {
         }
         return wrapper;
     }
+
     @Override
     public ResponseWrapperAdsDto getAll() {
         logger.info("Invoke method getAllAds");
@@ -119,11 +120,13 @@ public class AdsServiceImpl implements AdsService {
         wrapper.setCount(list.size());
         return wrapper;
     }
+
     @Override
     public Ads getAdsNotDtoById(Long id) {
         logger.info("Invoke method getAdsNotDtoById");
         return adsRepository.findById(id).orElse(null);
     }
+
     @Override
     public ResponseWrapperAdsDto searchAds(String part) {
         logger.info("Invoke method searchAds");
