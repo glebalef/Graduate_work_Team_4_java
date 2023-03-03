@@ -24,12 +24,21 @@ public class UserServiceImpl implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
+    /**
+     * Метод редактирования пользователя
+     *
+     * @param userDto обновление данных пользователя
+     * @param email   получение данных пользователя
+     * @return объект userDto
+     */
     @Override
     public UserDto updateUser(UserDto userDto, String email) {
         logger.info("Was invoked method for editing user: {}", userDto);
 
         userDto.setEmail(email);
         UserInfo userFound = userRepository.findByEmail(email);
+        Avatar avatar = avatarRepository.findAvatarByUserInfoId(userFound.getId());
+
         userFound.setEmail(userDto.getEmail());
         userFound.setFirstName(userDto.getFirstName());
         userFound.setLastName(userDto.getLastName());
@@ -37,14 +46,15 @@ public class UserServiceImpl implements UserService {
         userFound.setCity(userDto.getCity());
         userRepository.save(userFound);
 
-        return UserMapper.INSTANCE.usertoUserDto(userFound);
+        return userMapper.usertoUserDto(userFound, avatar);
     }
 
     @Override
     public UserDto getUser(String email) {
         logger.info("Was invoked method for getting user");
         UserInfo userFound = userRepository.findByEmail(email);
-        return userMapper.usertoUserDto(userFound);
+        Avatar avatar = avatarRepository.findAvatarByUserInfoId(userFound.getId());
+        return userMapper.usertoUserDto(userFound, avatar);
     }
 
     @Override
@@ -62,8 +72,7 @@ public class UserServiceImpl implements UserService {
         avatar.setData(avatarFile.getBytes());
         avatar.setUserInfo(userInfo);
         avatarRepository.save(avatar);
-        userInfo.setImage(avatar.getFilePath());
-        userRepository.save(userInfo);
+
     }
 
     @Override

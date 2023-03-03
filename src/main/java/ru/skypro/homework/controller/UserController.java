@@ -100,6 +100,16 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE})
+    @Operation(tags = {"Пользователи"},
+            description = "getUserImage",
+            summary = "getUserImage",
+            operationId = "getUserImage",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
+                            schema = @Schema(implementation = UserInfo.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+            })
     public byte[] getImage(@PathVariable("id") Long id) throws IOException {
         return userService.getImage(id);
     }
