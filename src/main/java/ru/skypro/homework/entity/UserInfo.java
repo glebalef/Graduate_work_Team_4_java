@@ -13,25 +13,17 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {
-
     private String email;
-
     private String firstName;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
-
     private String lastName;
-
     private String phone;
-
     private String regDate;
-
     private String city;
-
     private String password;
-    String image;
+
 }
 
 
