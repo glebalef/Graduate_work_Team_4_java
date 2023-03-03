@@ -74,6 +74,7 @@ foreign key (username) references users
 );
 --changeset EvgenyF:2
 alter table users_info add column image text;
+alter table users_info drop column image;
 
 
 

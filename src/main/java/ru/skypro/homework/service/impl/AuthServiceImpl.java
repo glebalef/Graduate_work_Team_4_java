@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.entity.Avatar;
 import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
@@ -57,7 +58,6 @@ public class AuthServiceImpl implements AuthService {
                         .roles(role.name())
                         .build()
         );
-
         UserInfo userInfo = UserMapper.INSTANCE.registerReqToUser(registerReq);
         userInfo.setRegDate(LocalDate.now().toString());
         userRepository.save(userInfo);
