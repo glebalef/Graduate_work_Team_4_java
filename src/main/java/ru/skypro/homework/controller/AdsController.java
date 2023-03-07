@@ -1,6 +1,11 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,12 +18,7 @@ import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.ImageService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,23 +34,40 @@ public class AdsController {
     private final AdsService adsService;
     private final ImageService imageService;
 
-    // /ads
     @GetMapping("")
-    public ResponseWrapperAdsDto getALLAds() {
-        return adsService.getAll();
+    @Operation(tags = {"Объявления"},
+            operationId = "getALLAds",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = ResponseWrapperAdsDto.class))
+                    })
+            })
+    public ResponseEntity<ResponseWrapperAdsDto> getALLAds() {
+        return ResponseEntity.ok(adsService.getAll());
     }
 
 
     @PostMapping(value = "",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
     )
-
-    public AdsDto addAds(@RequestPart CreateAdsDto properties,
-                         @RequestPart(required = false) MultipartFile image,
-                         Authentication authentication)
+    @Operation(tags = {"Объявления"},
+            summary = "addAds",
+            operationId = "addAds",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Created", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AdsDto.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+            })
+    public ResponseEntity<AdsDto> addAds(@RequestPart CreateAdsDto properties,
+                                         @RequestPart(required = false) MultipartFile image,
+                                         Authentication authentication)
             throws IOException {
         // создаем сущность Ads
-        Long id = adsService.addAds(properties, authentication).getPk(); // сохранили в базу, вытащили id
+        Long id = adsService.addAds(properties, authentication).
+                getPk(); // сохранили в базу, вытащили id
 
         // сохраняем сущность Image
         imageService.uploadImage(id, image);
@@ -61,51 +78,101 @@ public class AdsController {
         Ads reWrite = Objects.requireNonNull(adsService.getAdsNotDtoById(id));
         reWrite.setImage(images);
         adsService.justSaveAds(reWrite);
-
-        return adsService.getAds(id);
+        adsService.getAds(id);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // /ads/{id}
+
     @GetMapping("{id}")
-    public FullAdsDto getAds(@PathVariable Long id) {
-        return adsService.getFullAds(id);
+    @Operation(tags = {"Объявления"},
+            summary = "getFullAdd",
+            operationId = "getAds",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = FullAdsDto.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
+    public ResponseEntity<FullAdsDto> getAds(@PathVariable Long id) {
+        return ResponseEntity.ok(adsService.getFullAds(id));
     }
 
     @DeleteMapping("{id}")
+    @Operation(tags = {"Объявления"},
+            summary = "removeAds",
+            operationId = "removeAds",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "No content", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+            })
     public ResponseEntity<AdsDto> removeAds(@PathVariable Long id, Authentication authentication) {
         adsService.removeFullAds(id, authentication);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("{id}")
-    public AdsDto updateAds(@PathVariable Long id, @RequestBody CreateAdsDto ads, Authentication authentication) {
-        return adsService.updateAds(id, ads, authentication);
+    @Operation(tags = {"Объявления"},
+            summary = "updateAds",
+            operationId = "updateAds",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AdsDto.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
+    public ResponseEntity<AdsDto> updateAds(@PathVariable Long id, @RequestBody CreateAdsDto ads, Authentication authentication) {
+        return ResponseEntity.ok(adsService.updateAds(id, ads, authentication));
     }
 
     // Комментарии (Comments)
 
-    //ok
     @PostMapping("{adPk}/comments")
+    @Operation(tags = {"Объявления"},
+            summary = "addComments",
+            operationId = "addComments",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = CommentDto.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<CommentDto> addComments(@PathVariable Long adPk,
                                                   @RequestBody CommentDto commentDto,
                                                   Authentication authentication) {
-
         commentDto.setCreatedAt(LocalDateTime.now().toString());
-
-
         return ResponseEntity.ok(commentService.addComments(commentDto, adPk, authentication));
     }
 
-    // ok
     @GetMapping("{adPk}/comments")
+    @Operation(tags = {"Объявления"},
+            summary = "getComments",
+            operationId = "getComments",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = ResponseWrapperComment.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Long adPk) {
-
         return ResponseEntity.ok(commentService.getAll(adPk));
     }
 
-
-    // {ad_pk}/comments/{id}
     @GetMapping("{adPk}/comments/{id}")
+    @Operation(tags = {"Объявления"},
+            summary = "getComments",
+            operationId = "getComments_1",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = CommentDto.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<CommentDto> getComments(@PathVariable Long adPk, @PathVariable Long id) {
         CommentDto commentDto = commentService.getComments(id);
         if (commentDto == null) {
@@ -115,6 +182,15 @@ public class AdsController {
     }
 
     @DeleteMapping("{ad_Pk}/comments/{id}")
+    @Operation(tags = {"Объявления"},
+            summary = "deleteComments",
+            operationId = "deleteComments",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<Void> deleteComments(@PathVariable Long ad_Pk,
                                                @PathVariable Long id,
                                                Authentication authentication) {
@@ -123,6 +199,17 @@ public class AdsController {
     }
 
     @PatchMapping("{ad_Pk}/comments/{id}")
+    @Operation(tags = {"Объявления"},
+            summary = "updateComments",
+            operationId = "updateComments",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = CommentDto.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<CommentDto> updateComments(@PathVariable Long ad_Pk,
                                                      @PathVariable Long id,
                                                      @RequestBody CommentDto comment,
@@ -135,36 +222,23 @@ public class AdsController {
     }
 
     @GetMapping("/me")
+    @Operation(tags = {"Объявления"},
+            operationId = "getAdsMeUsingGET",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = CommentDto.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<ResponseWrapperAdsDto> getAdsMe(Authentication authentication) {
-        adsService.getAllAds(authentication);
         return ResponseEntity.ok(adsService.getAllAds(authentication));
-    }
-
-    @PostMapping(value = "{adsPk}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@PathVariable Long adsPk, @RequestParam MultipartFile image) throws IOException {
-        imageService.uploadImage(adsPk, image);
-        return ResponseEntity.ok().build();
-    }
-
-
-    @PostMapping
-    public void updateAdsImage(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        Image image = imageService.findImage(id);
-
-        Path path = Path.of(image.getFilePath());
-
-        try (InputStream is = Files.newInputStream(path);
-             OutputStream os = response.getOutputStream()) {
-
-            response.setStatus(200);
-            response.setContentType(image.getMediaType());
-            response.setContentLength((int) image.getFileSize());
-            is.transferTo(os);
-        }
     }
 
     // метод поиска для тренировки
     @GetMapping("/search")
+    @Operation(tags = {"Объявления"})
     public ResponseWrapperAdsDto searchAds(@RequestParam String search) {
         return adsService.searchAds(search);
     }

@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
     /**
      * Метод редактирования пользователя
      *
-     * @param userDto обновление данных пользователя
-     * @param email   получение данных пользователя
+     * @param userDto data transfer object пользователя
+     * @param email email пользователя
      * @return объект userDto
      */
     @Override
@@ -49,6 +49,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.usertoUserDto(userFound, avatar);
     }
 
+    /**
+     * Метод получения пользователя
+     *
+     * @param email email пользователя
+     * @return объект userDto
+     */
     @Override
     public UserDto getUser(String email) {
         logger.info("Was invoked method for getting user");
@@ -57,12 +63,18 @@ public class UserServiceImpl implements UserService {
         return userMapper.usertoUserDto(userFound, avatar);
     }
 
+    /**
+     * Метод редактирования аватарки пользователя
+     *
+     * @param avatarFile картинка для профиля пользователя
+     * @param email получение данных пользователя
+     */
     @Override
     public void updateUserImage(MultipartFile avatarFile, String email) throws IOException {
         logger.info("Was invoked method for editing user's image");
         UserInfo userInfo = userRepository.findByEmail(email);
         Avatar avatar = avatarRepository.findAvatarByUserInfoId(userInfo.getId());
-
+        //если аватар еще не установлен
         if (avatar == null) {
             avatar = new Avatar();
         }
@@ -72,13 +84,17 @@ public class UserServiceImpl implements UserService {
         avatar.setData(avatarFile.getBytes());
         avatar.setUserInfo(userInfo);
         avatarRepository.save(avatar);
-
     }
-
+    /**
+     * Метод получения аватарки пользователя
+     *
+     * @param userId id пользователя
+     * @return данные аватарки пользователя
+     */
     @Override
-    public byte[] getImage(Long id) {
+    public byte[] getImage(Long userId) {
         logger.info("Was invoked method for getting avatar");
-        Avatar avatar = avatarRepository.findAvatarByUserInfoId(id);
+        Avatar avatar = avatarRepository.findAvatarByUserInfoId(userId);
         return avatar.getData();
     }
 }
