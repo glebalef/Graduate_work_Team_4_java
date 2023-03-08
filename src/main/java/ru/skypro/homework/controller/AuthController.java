@@ -1,5 +1,9 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +30,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
+    @Operation(tags = {"Авторизация"},
+            summary = "login",
+            operationId = "login",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
+                            schema = @Schema(implementation = Object.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<?> login(@RequestBody LoginReq req) {
         if (authService.login(req.getUsername(), req.getPassword())) {
             return ResponseEntity.ok().build();
@@ -35,6 +50,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(tags = {"Авторизация"},
+            summary = "register",
+            operationId = "register",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Created", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            })
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();
         if (authService.register(req, role)) {

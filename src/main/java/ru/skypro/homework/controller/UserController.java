@@ -55,9 +55,9 @@ public class UserController {
             summary = "updateUser",
             operationId = "updateUser",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
-                            schema = @Schema(implementation = UserInfo.class))
-                    }),
+                    @ApiResponse(responseCode = "200", description = "OK", content =
+                            {@Content(mediaType = "*/*", schema = @Schema(implementation = UserInfo.class))
+                            }),
                     @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
@@ -92,7 +92,7 @@ public class UserController {
                     @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
                             schema = @Schema(implementation = UserInfo.class))
                     }),
-                    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+                    @ApiResponse(responseCode = "404", description = "Not Found")
             })
     public ResponseEntity<String> updateUserImage(@RequestParam MultipartFile image, Authentication authentication) throws IOException {
         userService.updateUserImage(image, authentication.getName());
@@ -108,9 +108,9 @@ public class UserController {
                     @ApiResponse(responseCode = "200", description = "OK", content = {@Content(mediaType = "*/*",
                             schema = @Schema(implementation = UserInfo.class))
                     }),
-                    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
+                    @ApiResponse(responseCode = "404", description = "Not Found")
             })
-    public byte[] getImage(@PathVariable("id") Long id) throws IOException {
-        return userService.getImage(id);
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long userId) throws IOException {
+        return ResponseEntity.ok(userService.getImage(userId));
     }
 }

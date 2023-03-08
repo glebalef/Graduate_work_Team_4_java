@@ -12,6 +12,7 @@ import ru.skypro.homework.mapper.AdsMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @SpringBootTest
 class HomeworkApplicationTests {
 
@@ -23,8 +24,7 @@ class HomeworkApplicationTests {
             "495-11-22",
             "01-01-2000",
             "Moscow",
-            "Password"
-    , null);
+            "Password");
 
     Ads TEST_ADS = new Ads(
             1L,
