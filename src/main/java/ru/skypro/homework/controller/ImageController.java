@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
-
 import java.io.IOException;
 
 

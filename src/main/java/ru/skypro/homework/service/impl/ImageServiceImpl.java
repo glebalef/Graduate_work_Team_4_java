@@ -38,6 +38,15 @@ public class ImageServiceImpl implements ImageService {
     @Value("${path.to.images.folder}")
     private String imagesDir;
 
+    /**
+     * Метод загрузки картинки объявления
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param adsId идентификатор искомого объявления
+     * @param imageFile картинка
+     */
     @Override
     public void uploadImage(Long adsId, MultipartFile imageFile) throws IOException {
         logger.info("Invoke method uploadImage");
@@ -64,17 +73,38 @@ public class ImageServiceImpl implements ImageService {
 
     }
 
+    /**
+     * Метод получения расширения картинки объявления
+     * <br>
+     * @param fileName название картинки
+     * @return загруженная картинка
+     */
     private String getExtensions(String fileName) {
         logger.info("Invoke method getExtensions");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
+    /**
+     * Метод поиска картинки объявления
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.ImageRepository#findByAdsPk(Long)}
+     *
+     * @param adsPk идентификатор объявления
+     * @return найденная картинка
+     */
     public Image findImage(Long adsPk) {
         logger.info("Invoke method findImage");
         return imageRepository.findImageByAds_pk(adsPk);
     }
 
-
+    /**
+     * Метод поиска картинок объявления
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.ImageRepository#findByAdsPk(Long)}
+     *
+     * @param adsPk идентификатор объявления
+     * @return найденные картинки
+     */
     public List<String> findFilePathsByAdsPk(Long adsPk) {
         logger.info("Invoke method findFilePathsByAdsPk");
         List<String> list = new ArrayList<>();
@@ -84,6 +114,15 @@ public class ImageServiceImpl implements ImageService {
         return list;
     }
 
+    /**
+     * Метод перезаписи картинок объявления
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param id идентификатор объявления
+     * @return перезаписанные картинки
+     */
     public void imageReWrite(Long id) {
         logger.info("Invoke method imageReWrite");
         List<Image> images = new ArrayList<>();
@@ -93,6 +132,17 @@ public class ImageServiceImpl implements ImageService {
     }
 
 
+    /**
+     * Метод обновления картинки объявления
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.ImageRepository#findByAdsPk(Long)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param adsId идентификатор объявления
+     * @param imageFile картинка
+     * @param authentication аутентификация пользователя
+     * @return обновленная картинка
+     */
     @Override
     public void updateImage(Long adsId, MultipartFile imageFile, Authentication authentication) throws IOException {
         logger.info("Invoke method updateImage");
