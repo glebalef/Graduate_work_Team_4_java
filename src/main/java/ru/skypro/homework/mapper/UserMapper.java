@@ -14,7 +14,7 @@ public interface UserMapper {
 
     @Mapping(source = "avatar.filePath", target = "image")
     @Mapping(source = "userInfo.id", target = "id")
-    UserDto usertoUserDto(UserInfo userInfo, Avatar avatar);
+    UserDto userToUserDto(UserInfo userInfo, Avatar avatar);
 
     @Mapping(source = "username", target = "email")
     @Mapping(target = "avatar.filePath", ignore = true)

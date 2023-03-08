@@ -7,8 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Comment;
-import ru.skypro.homework.entity.UserInfo;
-import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -23,6 +21,16 @@ public class SecurityServiceImpl implements SecurityService {
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Метод получения объявления аутентифицированному пользователю
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     * Используется метод репозитория {@link ru.skypro.homework.repository.UserRepository#findByEmail(String)}
+     *
+     * @param authentication аутентификация пользователя
+     * @param adsId          идентификатор объявления
+     * @return полученный доступ аутентифицированному пользователю с определенной ролью
+     */
     @Override
     public boolean accessAds(Authentication authentication, Long adsId) {
         logger.info("Invoke method accessAds");
@@ -31,6 +39,17 @@ public class SecurityServiceImpl implements SecurityService {
         Long userInfoId = userRepository.findByEmail(authentication.getName()).getId();
         return userInfoId.equals(userAdsId) || role(authentication);
     }
+
+    /**
+     * Метод получения комментарев аутентифицированному пользователю
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     * Используется метод репозитория {@link ru.skypro.homework.repository.UserRepository#findByEmail(String)}
+     *
+     * @param authentication аутентификация пользователя
+     * @param commentId      идентификатор комментария
+     * @return полученный доступ аутентифицированному пользователю с определенной ролью
+     */
     @Override
     public boolean accessComments(Authentication authentication, Long commentId) {
         logger.info("Invoke method accessComments");
@@ -40,6 +59,13 @@ public class SecurityServiceImpl implements SecurityService {
         return userInfoId.equals(userIdComment) || role(authentication);
     }
 
+    /**
+     * Метод получения доступа для админа
+     * <br>
+     *
+     * @param authentication аутентификация пользователя
+     * @return полученный доступ админу
+     */
     @Override
     public boolean role(Authentication authentication) {
         return authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
