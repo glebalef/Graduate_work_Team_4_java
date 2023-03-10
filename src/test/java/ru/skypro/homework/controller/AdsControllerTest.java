@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
@@ -36,6 +37,9 @@ public class AdsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private AdsRepository adsRepository;
@@ -81,7 +85,6 @@ public class AdsControllerTest {
 
     @SpyBean
     private UserMapperImpl userMapper;
-
 
     @Test
     public void testAds() throws Exception {
@@ -166,6 +169,4 @@ public class AdsControllerTest {
                 .andExpect(jsonPath("$.imageList").value(imageList))
                 .andExpect(jsonPath("$.adsPrise").value(adsPrice));
     }
-}
-
- */
+} */
