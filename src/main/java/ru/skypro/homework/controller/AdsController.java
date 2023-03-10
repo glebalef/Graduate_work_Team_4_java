@@ -82,7 +82,6 @@ public class AdsController {
     }
 
     // /ads/{id}
-
     @GetMapping("{id}")
     @Operation(tags = {"Объявления"},
             summary = "getFullAdd",
