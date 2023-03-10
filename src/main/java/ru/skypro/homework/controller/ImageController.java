@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.Ads;
+import ru.skypro.homework.exeptions.NoImageException;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 
@@ -28,8 +29,13 @@ public class ImageController {
     }
 
     @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
-    public byte[] getImage(@PathVariable Long id) {
+    public byte[] getImage(@PathVariable Long id) throws NoImageException {
+
         Ads ads = adsService.getAdsNotDtoById(id);
-        return ads.getImage().get(0).getData();
+        if (ads.getImage().get(0) == null) {
+            throw new NoImageException();
+        } else {
+            return ads.getImage().get(0).getData();
+        }
     }
 }
