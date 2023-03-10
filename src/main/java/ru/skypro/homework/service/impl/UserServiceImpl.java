@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
      * Метод редактирования пользователя
      *
      * @param userDto data transfer object пользователя
-     * @param email email пользователя
+     * @param email   email пользователя
      * @return объект userDto
      */
     @Override
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         userFound.setCity(userDto.getCity());
         userRepository.save(userFound);
 
-        return userMapper.usertoUserDto(userFound, avatar);
+        return userMapper.userToUserDto(userFound, avatar);
     }
 
     /**
@@ -60,14 +60,14 @@ public class UserServiceImpl implements UserService {
         logger.info("Was invoked method for getting user");
         UserInfo userFound = userRepository.findByEmail(email);
         Avatar avatar = avatarRepository.findAvatarByUserInfoId(userFound.getId());
-        return userMapper.usertoUserDto(userFound, avatar);
+        return userMapper.userToUserDto(userFound, avatar);
     }
 
     /**
      * Метод редактирования аватарки пользователя
      *
      * @param avatarFile картинка для профиля пользователя
-     * @param email получение данных пользователя
+     * @param email      получение данных пользователя
      */
     @Override
     public void updateUserImage(MultipartFile avatarFile, String email) throws IOException {
@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
         avatar.setUserInfo(userInfo);
         avatarRepository.save(avatar);
     }
+
     /**
      * Метод получения аватарки пользователя
      *

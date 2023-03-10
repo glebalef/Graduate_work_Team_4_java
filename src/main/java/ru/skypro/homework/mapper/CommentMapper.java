@@ -11,5 +11,4 @@ public interface CommentMapper {
 
     CommentDto commentToDto(Comment comment);
 
-    Comment commentDtoToEntity(CommentDto commentDto);
 }

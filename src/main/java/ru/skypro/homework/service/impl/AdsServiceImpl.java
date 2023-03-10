@@ -4,6 +4,7 @@ package ru.skypro.homework.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.AdsDto;
@@ -37,6 +38,14 @@ public class AdsServiceImpl implements AdsService {
     private final SecurityService securityService;
 
 
+    /**
+     * Метод поиска объявления по его идентификатору в БД.
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     *
+     * @param pk идентификатор искомого объявления
+     * @return найденное объявление с маппингом на дто
+     */
     @Override
     public AdsDto getAds(Long pk) {
         logger.info("Invoke method getAds");
@@ -45,12 +54,29 @@ public class AdsServiceImpl implements AdsService {
         return adsMapper.adsToAdsDto(ads);
     }
 
+    /**
+     * Метод просто сохранения объявления в БД.
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param ads новое объявление
+     */
     @Override
     public void justSaveAds(Ads ads) {
         logger.info("Invoke method justSaveAds");
         adsRepository.save(ads);
     }
 
+    /**
+     * Метод просто сохранения объявления в БД.
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     * Используется метод репозитория {@link ru.skypro.homework.repository.UserRepository#findByEmail(String)}
+     *
+     * @param createAdsDto новое объявление
+     * @param authentication аутентификация пользователя
+     * @return сохраненное объявление с маппингом на дто
+     */
     @Override
     public AdsDto addAds(CreateAdsDto createAdsDto, Authentication authentication) {
         logger.info("Invoke method addAds");
@@ -61,12 +87,28 @@ public class AdsServiceImpl implements AdsService {
         return adsMapper.adsToAdsDto(adsRepository.save(ads));
     }
 
+    /**
+     * Метод поиска полного объявления по его идентификатору в БД.
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     *
+     * @param pk идентификатор искомого объявления
+     * @return найденное полное объявление с маппингом на дто
+     */
     @Override
     public FullAdsDto getFullAds(Long pk) {
         logger.info("Invoke method getFullAds");
         return fullAdsMapper.adsToFullAdsDto(Objects.requireNonNull(adsRepository.findById(pk).orElse(null)));
     }
 
+    /**
+     * Метод удаления объявления по его идентификатору в БД.
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#deleteById(Object)}
+     *
+     * @param pk идентификатор объявления
+     * @param authentication аутентификация пользователя
+     */
     @Override
     public void removeFullAds(Long pk, Authentication authentication) {
         logger.info("Invoke method removeFullAds");
@@ -74,6 +116,17 @@ public class AdsServiceImpl implements AdsService {
             adsRepository.deleteById(pk);
     }
 
+    /**
+     * Метод обновления объявления
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param pk идентификатор объявления
+     * @param createAdsDto маппинг объявления
+     * @param authentication аутентификация пользователя
+     * @return обновленное объявление с маппингом на дто
+     */
     @Override
     public AdsDto updateAds(Long pk, CreateAdsDto createAdsDto, Authentication authentication) {
         logger.info("Invoke method updateAds");
@@ -88,6 +141,15 @@ public class AdsServiceImpl implements AdsService {
         return adsMapper.adsToAdsDto(ads);
     }
 
+    /**
+     * Метод поиска всех объявлений у аутентифицированных пользователей
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.UserRepository#findByEmail(String)}
+     * Используется метод репозитория {@link ru.skypro.homework.repository.AdsRepository#findAllByUserInfoId(Long)}
+     *
+     * @param authentication аутентификация пользователя
+     * @return найденные объявления с маппингом на дто
+     */
     @Override
     public ResponseWrapperAdsDto getAllAds(Authentication authentication) {
         logger.info("Invoke method getAllAds for authentication");
@@ -108,6 +170,13 @@ public class AdsServiceImpl implements AdsService {
         return wrapper;
     }
 
+    /**
+     * Метод поиска всех объявлений у неаутентифицированных пользователей
+     * <br>
+     * Используется метод репозитория {@link JpaRepository#findAll()}
+     *
+     * @return найденные объявления с маппингом на дто
+     */
     @Override
     public ResponseWrapperAdsDto getAll() {
         logger.info("Invoke method getAllAds");
@@ -121,12 +190,28 @@ public class AdsServiceImpl implements AdsService {
         return wrapper;
     }
 
+    /**
+     * Метод поиска объявления без дто
+     * <br>
+     * Используется метод репозитория {@link JpaRepository#findById(Object)}
+     *
+     * @param id идентификатор искомого объявления
+     * @return найденное объявление без маппинга на дто
+     */
     @Override
     public Ads getAdsNotDtoById(Long id) {
         logger.info("Invoke method getAdsNotDtoById");
         return adsRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Метод поиска объявлений по части названия
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.AdsRepository#findAdsByTitleOrDescriptionContainingIgnoreCase(String, String)}
+     *
+     * @param part часть искомого объявления
+     * @return найденные объявления с маппингом на дто
+     */
     @Override
     public ResponseWrapperAdsDto searchAds(String part) {
         logger.info("Invoke method searchAds");

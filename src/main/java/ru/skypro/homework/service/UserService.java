@@ -13,6 +13,7 @@ public interface UserService {
     UserDto getUser(String email);
 
     void updateUserImage(MultipartFile avatarFile, String email) throws IOException;
+
     byte[] getImage(Long userId) throws IOException;
 
 }

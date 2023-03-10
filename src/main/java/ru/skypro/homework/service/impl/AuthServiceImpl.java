@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.Role;
-import ru.skypro.homework.entity.Avatar;
 import ru.skypro.homework.entity.UserInfo;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
@@ -33,6 +32,13 @@ public class AuthServiceImpl implements AuthService {
         this.encoder = new BCryptPasswordEncoder();
     }
 
+    /**
+     * Метод авторизации пользователя
+     * <br>
+     * @param userName логин пользователя
+     * @param password  пароль пользователя
+     * @return авторизованный пользователь
+     */
     @Override
     public boolean login(String userName, String password) {
         logger.info("Invoke method login");
@@ -45,6 +51,15 @@ public class AuthServiceImpl implements AuthService {
         return encoder.matches(password, encryptedPasswordWithoutEncryptionType);
     }
 
+    /**
+     * Метод регистрации пользователя
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param registerReq логин пользователя
+     * @param role  роль пользователя
+     * @return зарегистрированный пользователь
+     */
     @Override
     public boolean register(RegisterReq registerReq, Role role) {
         logger.info("Invoke method register");
@@ -65,6 +80,16 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
 
+    /**
+     * Метод смены пароля
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.UserRepository#findByEmail(String)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param newPasswordDto новый пароль пользователя
+     * @param email  логин пользователя
+     * @return обновленный пароль пользователя
+     */
     @Override
     public boolean changePassword(NewPasswordDto newPasswordDto, String email) {
         logger.info("Invoke method changePassword");
@@ -79,5 +104,4 @@ public class AuthServiceImpl implements AuthService {
         }
         return false;
     }
-
 }

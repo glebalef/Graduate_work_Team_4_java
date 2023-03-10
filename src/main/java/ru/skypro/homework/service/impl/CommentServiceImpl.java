@@ -35,6 +35,18 @@ public class CommentServiceImpl implements CommentService {
     private final SecurityService securityService;
 
 
+    /**
+     * Метод добавления комментария
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.UserRepository#findByEmail(String)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param commentDto новый комментарий
+     * @param adPk идентификатор объявления
+     * @param authentication аутентификация пользователя
+     * @return сохраненный комментарий с маппингом на дто
+     */
     @Override
     public CommentDto addComments(CommentDto commentDto, Long adPk, Authentication authentication) {
         logger.info("Invoke method addComments");
@@ -48,12 +60,31 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.commentToDto(newComment);
     }
 
+    /**
+     * Метод получения комментария
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     *
+     * @param id идентификатор комментария
+     * @return найденный комментарий с маппингом на дто
+     */
     @Override
     public CommentDto getComments(Long id) {
         logger.info("Invoke method getComments");
         return commentMapper.commentToDto(commentRepository.findById(id).orElse(null));
     }
 
+    /**
+     * Метод обновления комментария
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param author автор комментария
+     * @param commentDto комментарий
+     * @param authentication аутентификация пользователя
+     * @return обновленный комментарий с маппингом на дто
+     */
     @Override
     public CommentDto updateComments(Long author, Long id, CommentDto commentDto, Authentication authentication) {
         logger.info("Invoke method updateComments");
@@ -68,6 +99,15 @@ public class CommentServiceImpl implements CommentService {
         return null;
     }
 
+    /**
+     * Метод удаления комментария
+     * <br>
+     * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#deleteById(Object)}
+     *
+     * @param authentication аутентификация пользователя
+     * @param asId  идентификатор объявления
+     * @param commentId идентификатор комментария
+     */
     public void deleteComments(Authentication authentication, Long asId, Long commentId) {
         logger.info("Invoke method deleteComments");
         if (securityService.accessComments(authentication, commentId)) {
@@ -75,6 +115,14 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
+    /**
+     * Метод получения комментариев объявления
+     * <br>
+     * Используется метод репозитория {@link ru.skypro.homework.repository.CommentRepository#findCommentsByAds_Pk(Long)}
+     *
+     * @param adPk  идентификатор объявления
+     * @return полученные комментарии с маппингом на дто
+     */
     @Override
     public ResponseWrapperComment getAll(Long adPk) {
         logger.info("Invoke method getAllComments");
@@ -86,6 +134,5 @@ public class CommentServiceImpl implements CommentService {
         wrapper.setResults(list);
         wrapper.setCount(list.size());
         return wrapper;
-
     }
 }
