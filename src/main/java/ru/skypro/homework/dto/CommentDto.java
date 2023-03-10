@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class CommentDto {
-    private int author;
+    private Long author;
     private String createdAt;
-    private int pk;
+    private Long pk;
     private String text;
 }
