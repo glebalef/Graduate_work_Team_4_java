@@ -9,6 +9,7 @@ import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.exeptions.NoImageException;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
+
 import java.io.IOException;
 
 
@@ -25,11 +26,11 @@ public class ImageController {
             @RequestParam MultipartFile image,
             @PathVariable Long id, Authentication authentication) throws IOException {
         imageService.updateImage(id, image, authentication);
-        Ads ads = adsService.getAdsNotDtoById(id);
     }
 
     @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
     public byte[] getImage(@PathVariable Long id) throws NoImageException {
+
         Ads ads = adsService.getAdsNotDtoById(id);
         if (ads.getImage().get(0) == null) {
             throw new NoImageException();

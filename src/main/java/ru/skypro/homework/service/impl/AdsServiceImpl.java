@@ -73,7 +73,7 @@ public class AdsServiceImpl implements AdsService {
      * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
      * Используется метод репозитория {@link ru.skypro.homework.repository.UserRepository#findByEmail(String)}
      *
-     * @param createAdsDto новое объявление
+     * @param createAdsDto   новое объявление
      * @param authentication аутентификация пользователя
      * @return сохраненное объявление с маппингом на дто
      */
@@ -106,7 +106,7 @@ public class AdsServiceImpl implements AdsService {
      * <br>
      * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#deleteById(Object)}
      *
-     * @param pk идентификатор объявления
+     * @param pk             идентификатор объявления
      * @param authentication аутентификация пользователя
      */
     @Override
@@ -122,8 +122,8 @@ public class AdsServiceImpl implements AdsService {
      * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#findById(Object)}
      * Используется метод репозитория {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
      *
-     * @param pk идентификатор объявления
-     * @param createAdsDto маппинг объявления
+     * @param pk             идентификатор объявления
+     * @param createAdsDto   маппинг объявления
      * @param authentication аутентификация пользователя
      * @return обновленное объявление с маппингом на дто
      */
