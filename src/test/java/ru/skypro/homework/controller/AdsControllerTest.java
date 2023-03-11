@@ -1,4 +1,4 @@
-/* package ru.skypro.homework.controller;
+package ru.skypro.homework.controller;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,6 +22,9 @@ import ru.skypro.homework.mapper.*;
 import ru.skypro.homework.repository.*;
 import ru.skypro.homework.service.impl.*;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -134,13 +138,9 @@ public class AdsControllerTest {
         ads.setPrice(adsPrice);
 
         JSONObject adsObject = new JSONObject();
-        adsObject.put("adsPk", adsPk);
-        adsObject.put("adsDescription", adsDescription);
-        adsObject.put("adsTitle", adsTitle);
-        adsObject.put("userInfo", userInfo);
-        adsObject.put("commentList", commentList);
-        adsObject.put("imageList", imageList);
-        adsObject.put("adsPrice", adsPrice);
+        adsObject.put("description", adsDescription);
+        adsObject.put("title", adsTitle);
+        adsObject.put("price", adsPrice);
 
         Mockito.when(adsRepository.save(any(Ads.class))).thenReturn(ads);
         Mockito.when(adsRepository.findById(any(Long.class))).thenReturn(Optional.of(ads));
@@ -154,12 +154,21 @@ public class AdsControllerTest {
         Mockito.when(imageRepository.save(any(Image.class))).thenReturn(image);
         Mockito.when(imageRepository.findById(any(Long.class))).thenReturn(Optional.of(image));
 
+        byte[] bytes = Files.readAllBytes(Paths.get(AdsControllerTest.class.getResource("test.jpg").toURI()));
+        MockMultipartFile imagePart = new MockMultipartFile("image", bytes);
+        MockMultipartFile jsonPart = new MockMultipartFile(
+                "properties", "",
+                MediaType.APPLICATION_JSON_VALUE,
+                adsObject.toString().getBytes(StandardCharsets.UTF_8)
+        );
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/ads").with(csrf())
-                        .content(adsObject.toString())
+                        .multipart("/ads")
+                        .file(imagePart)
+                        .file(jsonPart)
+                        .with(csrf())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .accept(MediaType.MULTIPART_FORM_DATA_VALUE))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.adsPk").value(adsPk))
                 .andExpect(jsonPath("$.adsDescription").value(adsDescription))
@@ -169,4 +178,5 @@ public class AdsControllerTest {
                 .andExpect(jsonPath("$.imageList").value(imageList))
                 .andExpect(jsonPath("$.adsPrise").value(adsPrice));
     }
-} */
+
+}
