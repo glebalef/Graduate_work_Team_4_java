@@ -61,7 +61,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
             })
     public ResponseEntity<AdsDto> addAds(@RequestPart CreateAdsDto properties,
-                                         @RequestPart(required = false) MultipartFile image,
+                                         @RequestPart MultipartFile image,
                                          Authentication authentication)
             throws IOException {
         // создаем сущность Ads
