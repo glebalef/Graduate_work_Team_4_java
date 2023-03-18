@@ -9,6 +9,6 @@ public class AdsDto {
     private Long author;
     private List<String> image;
     private Long pk;
-    private int price;
+    private Long price;
     private String title;
 }

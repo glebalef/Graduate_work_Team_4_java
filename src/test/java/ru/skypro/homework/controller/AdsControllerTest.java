@@ -142,6 +142,7 @@ public class AdsControllerTest {
         adsObject.put("title", adsTitle);
         adsObject.put("price", adsPrice);
 
+
         Mockito.when(adsRepository.save(any(Ads.class))).thenReturn(ads);
         Mockito.when(adsRepository.findById(any(Long.class))).thenReturn(Optional.of(ads));
 
