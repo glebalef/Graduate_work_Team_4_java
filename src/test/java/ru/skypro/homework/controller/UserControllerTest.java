@@ -24,7 +24,7 @@ import ru.skypro.homework.service.impl.UserServiceImpl;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,7 +46,6 @@ class UserControllerTest {
     private UserMapper userMapper;
     @InjectMocks
     private UserController userController;
-
     @Test
     void testUser() throws Exception {
         Long id = 1L;
@@ -100,4 +99,5 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
     }
+
 }
