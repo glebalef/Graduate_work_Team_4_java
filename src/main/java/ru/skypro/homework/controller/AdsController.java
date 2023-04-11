@@ -234,10 +234,4 @@ public class AdsController {
         return ResponseEntity.ok(adsService.getAllAds(authentication));
     }
 
-    // метод поиска для тренировки
-    @GetMapping("/search")
-    @Operation(tags = {"Объявления"})
-    public ResponseWrapperAdsDto searchAds(@RequestParam String search) {
-        return adsService.searchAds(search);
-    }
 }

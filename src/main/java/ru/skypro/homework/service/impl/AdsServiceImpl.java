@@ -204,24 +204,4 @@ public class AdsServiceImpl implements AdsService {
         return adsRepository.findById(id).orElse(null);
     }
 
-    /**
-     * Метод поиска объявлений по части названия
-     * <br>
-     * Используется метод репозитория {@link ru.skypro.homework.repository.AdsRepository#findAdsByTitleOrDescriptionContainingIgnoreCase(String, String)}
-     *
-     * @param part часть искомого объявления
-     * @return найденные объявления с маппингом на дто
-     */
-    @Override
-    public ResponseWrapperAdsDto searchAds(String part) {
-        logger.info("Invoke method searchAds");
-        ResponseWrapperAdsDto wrapper = new ResponseWrapperAdsDto();
-        List<AdsDto> list = new ArrayList<>();
-        for (Ads value : adsRepository.findAdsByTitleOrDescriptionContainingIgnoreCase(part, part)) {
-            list.add(adsMapper.adsToAdsDto(value));
-        }
-        wrapper.setResults(list);
-        wrapper.setCount(list.size());
-        return wrapper;
-    }
 }
